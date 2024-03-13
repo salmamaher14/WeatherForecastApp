@@ -2,4 +2,9 @@
     <string name="app_name">WeatherForecastApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Humidity">Humidity</string>
+    <string name="clouds">Clouds</string>
+    <string name="Clouds">Clouds</string>
+    <string name="Pressure">Pressure</string>
+    <string name="windspeed">Wind Speed</string>
 </resources>
