@@ -7,4 +7,12 @@
     <string name="Clouds">Clouds</string>
     <string name="Pressure">Pressure</string>
     <string name="windspeed">Wind Speed</string>
+    <string name="weather">Weather</string>
+    <string name="city_name">City Name</string>
+    <string name="dummy_date">13 Mar 2024</string>
+    <string name="temp_celsius">°C</string>
+    <string name="temp_fahrenheit">°F</string>
+    <string name="am">AM</string>
+    <string name="pm">PM</string>
+    <string name="dayName">Monday</string>
 </resources>

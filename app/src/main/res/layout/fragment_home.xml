@@ -4,150 +4,121 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:orientation="vertical">-->
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".HomeFragment">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/titleTextView"
+            android:id="@+id/locationTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="96dp"
-            android:text="Weather"
+            android:layout_marginTop="40dp"
+            android:text="@string/weather"
             android:textAlignment="center"
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/dateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="@string/dummy_date"
+            android:textAlignment="center"
+            android:textSize="17sp"
+            app:layout_constraintTop_toBottomOf="@+id/locationTextView" />
+
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/weatherPerHourCard"
-            android:layout_width="248dp"
-            android:layout_height="147dp"
-            android:layout_margin="20dp"
+            android:id="@+id/dailyStatusCardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/black"
             app:cardCornerRadius="15dp"
             app:cardElevation="0dp"
             app:contentPadding="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/hoursRv"
+            app:layout_constraintTop_toBottomOf="@id/dateTextView"
+            app:layout_constraintWidth_percent=".7"
             app:strokeWidth="0dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/hoursRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:layout_constraintTop_toBottomOf="@id/titleTextView" />
-
-
-
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/favCardView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/cityName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="Delhi"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="HardcodedText" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/currentDate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="9:30"
-                    android:textColor="@color/white"
-                    android:textSize="13sp"
-                    app:layout_constraintStart_toStartOf="@+id/cityName"
-                    app:layout_constraintTop_toBottomOf="@id/cityName"
-                    tools:ignore="HardcodedText" />
-
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/currentTime"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="3/8"
-                    android:textColor="@color/white"
-                    android:textSize="13sp"
-                    app:layout_constraintStart_toEndOf="@+id/currentDate"
-                    app:layout_constraintTop_toTopOf="@id/currentDate"
-                    tools:ignore="HardcodedText"
-                    tools:layout_editor_absoluteY="43dp" />
-
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/currentTemp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="24"
-                    android:textColor="@color/white"
-                    android:textSize="39sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/currentTime"
-                    tools:ignore="HardcodedText" />
 
                 <androidx.constraintlayout.utils.widget.ImageFilterView
                     android:id="@+id/weatherImageView"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="28dp"
+                    android:layout_marginTop="5dp"
                     android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:round="60dp"
                     tools:srcCompat="@tools:sample/backgrounds/scenic[8]" />
 
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/currentTempTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/weatherImageView"
+                    tools:text="24" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tempDegreeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/temp_celsius"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/currentTempTextView"
+                    app:layout_constraintTop_toTopOf="@+id/currentTempTextView" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/statusTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/currentTempTextView"
+                    tools:text="Winter" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/subTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:text="5-Days Forecasts"
-            android:textColor="@color/black"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/weatherPerHourCard"
-            app:layout_constraintTop_toBottomOf="@+id/weatherPerHourCard"
-            tools:ignore="HardcodedText"
-            tools:layout_editor_absoluteY="43dp" />
-
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/hoursRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:layout_constraintStart_toStartOf="@id/subTitle"
-            app:layout_constraintTop_toBottomOf="@id/subTitle" />
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@id/dailyStatusCardView"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/weather_per_hour_item"
+            tools:orientation="horizontal" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -398,8 +369,9 @@
 
     </GridLayout>
 
+    </LinearLayout>
 
-    <!--    </LinearLayout>-->
+
 </androidx.core.widget.NestedScrollView>
 
 
