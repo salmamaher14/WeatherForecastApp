@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".settings.view.SettingFragment"
+    android:background="@drawable/bg_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/locationConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/setting_round_rectangle"
+        android:backgroundTint="@color/weatherPerDayColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/locationImageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:background="@color/settingItem"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundPercent="1"
+            app:srcCompat="@drawable/location_icon"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/locationTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="@string/location"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/locationImageView"
+            app:layout_constraintBottom_toBottomOf="@id/locationImageView"
+            app:layout_constraintTop_toTopOf="@id/locationImageView" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/gpsRadioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:text="@string/gps"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:shadowColor="@color/white"
+
+            app:layout_constraintBottom_toBottomOf="@id/locationImageView"
+            app:layout_constraintStart_toEndOf="@id/locationImageView"
+            app:layout_constraintTop_toTopOf="@id/locationImageView" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/mapRadioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:text="@string/map"
+            app:layout_constraintStart_toEndOf="@id/gpsRadioButton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/languageConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/setting_round_rectangle"
+        android:backgroundTint="@color/weatherPerDayColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/locationConstraintLayout">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/languageImageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:background="@color/settingItem"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundPercent="1"
+            app:srcCompat="@drawable/language_icon"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/languageTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="@string/language"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/languageImageView"
+            app:layout_constraintBottom_toBottomOf="@id/languageImageView"
+            app:layout_constraintTop_toTopOf="@id/languageImageView" />
+
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/englishRadioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:text="@string/english"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:shadowColor="@color/white"
+
+            app:layout_constraintBottom_toBottomOf="@id/languageImageView"
+            app:layout_constraintStart_toEndOf="@id/languageImageView"
+            app:layout_constraintTop_toTopOf="@id/languageImageView" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/arabicRadioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:text="@string/arabic"
+            app:layout_constraintBottom_toBottomOf="@id/englishRadioButton"
+
+            app:layout_constraintTop_toTopOf="@id/englishRadioButton"
+
+            app:layout_constraintStart_toEndOf="@id/englishRadioButton"
+
+            />
+
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tempratureConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/setting_round_rectangle"
+        android:backgroundTint="@color/weatherPerDayColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/languageConstraintLayout">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/temperatureImageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:background="@color/settingItem"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundPercent="1"
+            app:srcCompat="@drawable/temperature"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/temperatureTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="@string/temperature"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/temperatureImageView"
+            app:layout_constraintBottom_toBottomOf="@id/temperatureImageView"
+            app:layout_constraintTop_toTopOf="@id/temperatureImageView" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/kelvinRadioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="120dp"
+            android:text="@string/kelvin"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:shadowColor="@color/white"
+
+            app:layout_constraintBottom_toBottomOf="@id/temperatureImageView"
+            app:layout_constraintStart_toEndOf="@id/temperatureImageView"
+            app:layout_constraintTop_toTopOf="@id/temperatureImageView" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/celsiusRadioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:text="@string/celsius"
+            app:layout_constraintBottom_toBottomOf="@id/kelvinRadioButton"
+
+            app:layout_constraintTop_toTopOf="@id/kelvinRadioButton"
+
+            app:layout_constraintStart_toEndOf="@id/kelvinRadioButton" />
+
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/fahrenheitRadioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/fahrenheit"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/kelvinRadioButton"
+            app:layout_constraintTop_toBottomOf="@id/kelvinRadioButton" />
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/windSpeedConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/setting_round_rectangle"
+        android:backgroundTint="@color/weatherPerDayColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tempratureConstraintLayout">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/windSpeedImageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:background="@color/settingItem"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundPercent="1"
+            app:srcCompat="@drawable/wind_speed"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/windSpeedTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="@string/windSpeed"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/windSpeedImageView"
+            app:layout_constraintBottom_toBottomOf="@id/windSpeedImageView"
+            app:layout_constraintTop_toTopOf="@id/windSpeedImageView" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/meterRadioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="110dp"
+            android:text="@string/meterPerSecond"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:shadowColor="@color/white"
+
+            app:layout_constraintBottom_toBottomOf="@id/windSpeedImageView"
+            app:layout_constraintStart_toEndOf="@id/windSpeedImageView"
+            app:layout_constraintTop_toTopOf="@id/windSpeedImageView" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/milesRadioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:text="@string/milesPerHour"
+            app:layout_constraintBottom_toBottomOf="@id/meterRadioButton"
+
+            app:layout_constraintTop_toTopOf="@id/meterRadioButton"
+
+            app:layout_constraintStart_toEndOf="@id/meterRadioButton" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

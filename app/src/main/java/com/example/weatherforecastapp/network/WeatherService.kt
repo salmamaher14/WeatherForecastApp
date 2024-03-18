@@ -17,8 +17,14 @@ interface WeatherService {
     suspend fun getForecastWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
-        @Query("appid") apiKey: String
+        @Query("appid") apiKey: String,
+        @Query("units") temperatureUnits:String,
+        @Query("lang")  language:String
 
     ):ForeCastWeatherResponse
 }
 
+/*
+https://api.openweathermap.org/data/2.5/forecast?lat=57&lon=-2.15&appid=3bc0ed335a4d22f215fe489f89eb2c98
+&units=metric&lang=ar
+ */

@@ -3,7 +3,33 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
-    <color name="green">#3AFF00</color>
-    <color name="blue">#0423D3</color>
-    <color name="yellow">#FFEB3B</color>
+
+
+    <color name="startColorForHourCard">#414696</color>
+    <color name="centerColorForHourCard">#4a9ab0</color>
+    <color name="endColorForHourCard">#50ccc2</color>
+
+    <color name="startColorForParent">#2cbd9d</color>
+    <color name="centerColorForParent">#3b9685</color>
+    <color name="endColorForParent">#1c62dc</color>
+
+    <color name="weatherPerDayColor">#192330</color>
+    <color name="settingItem">#8ab4c2</color>
+
+
+
+
 </resources>
+
+<!--<resources>-->
+<!--<color name="black">#FF000000</color>-->
+<!--<color name="white">#FFFFFFFF</color>-->
+
+<!--<color name="colorPrimary">#FF5134</color>-->
+<!--<color name="colorAccent">#FFBA00</color>-->
+<!--<color name="fontColor">#1E2843</color>-->
+<!--<color name="lightGrey">#EEF0F3</color>-->
+<!--<color name="transparent">#00FFFFFF</color>-->
+<!--<color name="parentBackground">#F7F7F7</color>-->
+<!--<color name="cardBackground">#FFFFFF</color>-->
+<!--</resources>-->

@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface WeatherRemoteDataSource {
     suspend fun getCurrentWeatherOverNetwork(latitude:Double, longitude:Double): Flow<CurrWeatherResponse>
-    suspend fun getForecastWeatherOverNetwork(latitude:Double,longitude:Double):Flow<ForeCastWeatherResponse>
+    suspend fun getForecastWeatherOverNetwork(latitude:Double,longitude:Double,tempUnit:String,language:String):Flow<ForeCastWeatherResponse>
 }

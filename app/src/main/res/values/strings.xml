@@ -15,4 +15,22 @@
     <string name="am">AM</string>
     <string name="pm">PM</string>
     <string name="dayName">Monday</string>
+    <string name="home">Home</string>
+    <string name="setting">Setting</string>
+    <string name="favourite">Favourite</string>
+    <string name="alert">Alert</string>
+    <string name="weatherTitle">Weather</string>
+    <string name="gps">Gps</string>
+    <string name="location">Location</string>
+    <string name="map">Map</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic</string>
+    <string name="language">Language</string>
+    <string name="kelvin">Kelvin</string>
+    <string name="temperature">Temperature</string>
+    <string name="celsius">Celsius</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="milesPerHour">Mile/hour</string>
+    <string name="meterPerSecond">Meter/sec</string>
+    <string name="windSpeed">Wind Speed</string>
 </resources>

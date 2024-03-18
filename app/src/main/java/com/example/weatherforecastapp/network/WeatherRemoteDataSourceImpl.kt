@@ -30,18 +30,17 @@ class WeatherRemoteDataSourceImpl:WeatherRemoteDataSource{
 
         return flow { emit(weatherService.getCurrentWeather(latitude,longitude,Constants.API_KEY)) }
 
-//        val response=weatherService.getCurrentWeather(latitude,longitude,apiKey)
-//        return  response
+
     }
 
     override suspend fun getForecastWeatherOverNetwork(
         latitude: Double,
         longitude: Double,
+        tempUnit: String,
+        language: String
+    ): Flow<ForeCastWeatherResponse> {
+        return  flow { emit(weatherService.getForecastWeather(latitude, longitude, Constants.Companion.API_KEY, tempUnit , language )) }
 
-    ): Flow<ForeCastWeatherResponse>{
-        return  flow { emit(weatherService.getForecastWeather(latitude, longitude, Constants.Companion.API_KEY)) }
-//        val response=weatherService.getForecastWeather(latitude,longitude,apiKey)
-//        return  response
     }
 
 

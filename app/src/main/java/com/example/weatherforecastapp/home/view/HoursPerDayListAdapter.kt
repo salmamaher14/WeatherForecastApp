@@ -1,5 +1,6 @@
 package com.example.weatherforecastapp.home.view
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,19 +27,22 @@ class HoursPerDayListAdapter:ListAdapter<WeatherData,HoursPerDayListAdapter.Hour
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: HoursPerDayViewHolder, position: Int) {
-        val currentHoursPerDay:WeatherData = getItem(position)
-        val dateAndTime:String=currentHoursPerDay.dt_txt
+
+        val currentHour:WeatherData = getItem(position)
+
+        val dateAndTime:String=currentHour.dt_txt
         val separateDateAndTime = getSeparateDataAndTime(dateAndTime)
-        val time = separateDateAndTime.toLocalTime()
-        holder.time.text= time.toString()
+
+        Log.i("Time is", "onBindViewHolder: "+separateDateAndTime.first)
+        holder.time.text= separateDateAndTime.first.hour.toString()
 
         Glide.with(holder.itemView.context)
-            .load("https://openweathermap.org/img/wn/"+currentHoursPerDay.weather[position].icon+".png")
+            .load("https://openweathermap.org/img/wn/${currentHour.weather[0].icon}.png")
             .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.ic_launcher_foreground)
             .into(holder.weatherStatus)
 
-        holder.temp.text = currentHoursPerDay.main.temp_kf.toString()
+        holder.temp.text = currentHour.main.temp_kf.toString()
 
     }
 
@@ -46,11 +50,9 @@ class HoursPerDayListAdapter:ListAdapter<WeatherData,HoursPerDayListAdapter.Hour
 
         val weatherStatus: ImageFilterView = itemView.findViewById(R.id.hourlyStatusImageView)
         val temp:MaterialTextView=itemView.findViewById(R.id.hourlyTempTextView)
-        val time:MaterialTextView=itemView.findViewById(R.id.hourTimeTextView)
+        val time:MaterialTextView=itemView.findViewById(R.id.hourTextView)
 
     }
 
-/*
-https://openweathermap.org/img/wn/10d.png
- */
+
 }

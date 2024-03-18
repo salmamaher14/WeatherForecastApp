@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape android:shape="rectangle"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
-    <corners android:radius="50dp"/>
-    <gradient android:startColor="@color/red"
-        android:endColor="@color/green"
-        android:centerColor="@color/yellow"/>
+    <corners android:radius="50dp" />
+    <gradient
+
+        android:startColor="@color/startColorForParent"
+        android:centerColor="@color/centerColorForHourCard"
+        android:endColor="@color/endColorForParent"
+        android:angle="90"
+
+    />
 </shape>
