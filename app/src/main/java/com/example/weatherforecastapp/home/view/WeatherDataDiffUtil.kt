@@ -6,7 +6,7 @@ import com.example.weatherforecastapp.model.WeatherData
 
 class WeatherDataDiffUtil:DiffUtil.ItemCallback<WeatherData>() {
     override fun areItemsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
-        return oldItem.dt==newItem.dt
+        return oldItem.dt_txt==newItem.dt_txt
     }
 
     @SuppressLint("DiffUtilEquals")

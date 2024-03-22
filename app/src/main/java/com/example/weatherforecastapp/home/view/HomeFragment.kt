@@ -1,7 +1,16 @@
 package com.example.weatherforecastapp.home.view
+
 import SettingsViewModel
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,27 +19,37 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.utils.widget.ImageFilterView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weatherforecastapp.R
+import com.example.weatherforecastapp.WeatherLocalDataSourceImpl
 import com.example.weatherforecastapp.home.viewmodel.HomeViewModel
 import com.example.weatherforecastapp.home.viewmodel.HomeViewModelFactory
+import com.example.weatherforecastapp.model.Constants
 import com.example.weatherforecastapp.model.WeatherRepositoryImpl
 import com.example.weatherforecastapp.network.WeatherRemoteDataSourceImpl
 import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModelFactory
 import com.example.weatherforecastapp.utilities.ForecastWeatherState
-
 import com.example.weatherforecastapp.utilities.getAllDatesExceptCurrentDate
 import com.example.weatherforecastapp.utilities.getAllDatesOfTheCurrentDate
+import com.example.weatherforecastapp.utilities.getSeparateDataAndTime
 import com.example.weatherforecastapp.utilities.metersPerSecondToMilesPerHour
-
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.textview.MaterialTextView
-
 import kotlinx.coroutines.launch
+import java.util.Locale
+
 
 
 
@@ -51,6 +70,8 @@ class HomeFragment : Fragment() {
     private lateinit var homeFactory: HomeViewModelFactory
     private lateinit var settingsFactory: SettingsViewModelFactory
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private lateinit var humidityTextView: MaterialTextView
     private lateinit var windSpeedTextView: MaterialTextView
     private lateinit var cloudsTextView: MaterialTextView
@@ -58,6 +79,12 @@ class HomeFragment : Fragment() {
     private lateinit var weatherStatusImageView: ImageFilterView
     private lateinit var currentTempTextView: MaterialTextView
     private lateinit var weatherDescriptionTextView: MaterialTextView
+    private lateinit var locationTextView:MaterialTextView
+    private lateinit var dateTextView:MaterialTextView
+
+
+    private  var latitude: Double = 0.0
+    private var longitude:Double=0.0
 
 
     override fun onCreateView(
@@ -78,12 +105,15 @@ class HomeFragment : Fragment() {
         setUpRecyclerView()
 
         initializeHomeParameters()
+//        setUpLocationParameters(latitude,longitude)
 
+
+
+
+        homeViewModel.startHome(settingsViewModel,latitude,longitude)
         setHoursPerDayInHome()
 
-        homeViewModel.startHome(settingsViewModel)
-
-        homeViewModel.observeSetting(settingsViewModel)
+        homeViewModel.observeSetting(settingsViewModel,latitude,longitude)
 
     }
 
@@ -110,6 +140,16 @@ class HomeFragment : Fragment() {
 
     }
 
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    override fun onResume() {
+//        super.onResume()
+//
+//        homeViewModel.startHome(settingsViewModel,latitude,longitude)
+//        setHoursPerDayInHome()
+//
+//        homeViewModel.observeSetting(settingsViewModel,latitude,longitude)
+//    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun setHoursPerDayInHome() {
         lifecycleScope.launch {
@@ -133,8 +173,12 @@ class HomeFragment : Fragment() {
                         hoursRecyclerView.visibility = View.VISIBLE
 
                         houresPerDayAdapter.submitList(getAllDatesOfTheCurrentDate(result.data.list))
+                        Log.i("houresPerDayAdapter", "setHoursPerDayInHome: "+result.data.list)
 
                         daysListAdapter.submitList(getAllDatesExceptCurrentDate(result.data.list))
+
+                        dateTextView.text= getSeparateDataAndTime(result.data.list.get(0).dt_txt.toString()).second.toString() +" "
+                                getSeparateDataAndTime(result.data.list.get(0).dt_txt.toString()).first
 
                         setAdditionalWeatherInfo(result)
 
@@ -160,6 +204,10 @@ class HomeFragment : Fragment() {
 
     fun initUi() {
 
+        locationTextView=requireView().findViewById(R.id.locationInHomeTextView)
+
+        dateTextView=requireView().findViewById(R.id.dateTextView)
+
         hoursRecyclerView = requireView().findViewById(R.id.hoursRecyclerView)
 
         daysRecyclerView = requireView().findViewById(R.id.daysRecyclerView)
@@ -184,7 +232,7 @@ class HomeFragment : Fragment() {
 
     fun initializeHomeParameters() {
         homeFactory =
-            HomeViewModelFactory(WeatherRepositoryImpl.getInstance(WeatherRemoteDataSourceImpl.getInstance()))
+            HomeViewModelFactory(WeatherRepositoryImpl.getInstance(WeatherRemoteDataSourceImpl.getInstance(),WeatherLocalDataSourceImpl(requireContext())))
         homeViewModel = ViewModelProvider(this, homeFactory).get(HomeViewModel::class.java)
         settingsFactory = SettingsViewModelFactory(requireActivity().application)
         settingsViewModel =
@@ -234,8 +282,136 @@ class HomeFragment : Fragment() {
 
     }
 
+    @SuppressLint("MissingPermission")
+    override fun onStart() {
+        super.onStart()
+        if(checkPermissions(requireContext())){
+            if(isLocationEnabled(requireContext())){
+                getFreshLocation()
+            }else{
+                enableLocationServices()
+            }
+        }else{
+
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION),
+                Constants.REQUEST_LOCATION_CODE
+            )
+        }
+
+    }
+
+    fun checkPermissions(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
 
 
+    fun enableLocationServices() {
+        Toast.makeText(requireContext(), "Turn on location", Toast.LENGTH_LONG).show()
+        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        startActivity(intent)
+    }
+
+    fun isLocationEnabled(context: Context): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    @SuppressLint("MissingPermission")
+    fun getFreshLocation(){
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        fusedLocationClient.requestLocationUpdates(
+            LocationRequest.Builder(0).apply {
+                setPriority(com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY)
+            }.build(),
+
+            object: LocationCallback(){
+                override fun onLocationResult(locationResult: LocationResult){
+                    super.onLocationResult(locationResult)
+                    val location=locationResult.lastLocation
+
+                    if (location != null) {
+                        setUpLocationParameters(location.latitude,location.longitude)
+                        getAddressFromLocation(latitude, longitude)
+
+                    }
+
+                }
+
+            },
+            Looper.myLooper()
+        )
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode==Constants.REQUEST_LOCATION_CODE){
+            if(grantResults.size>1&& grantResults.get(0)== PackageManager.PERMISSION_GRANTED){
+                getFreshLocation()
+            }
+        }
+    }
+
+     fun getAddressFromLocation(latitude: Double, longitude: Double) {
+        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+        try {
+            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+            if (addresses != null) {
+                if (addresses.isNotEmpty()) {
+                    val address = addresses
+                    locationTextView.text = address.get(0).locality
+                    Log.i("address", "getAddressFromLocation: "+address.get(0).locality)
+
+
+                } else {
+                    locationTextView.text = "Address not found"
+                }
+            }
+        } catch (e: Exception) {
+            locationTextView.text = "Unable to get address"
+        }
+    }
+
+    fun setUpLocationParameters(latitudeOfLocation: Double,longitudeOfLocation: Double){
+
+        arguments?.let {
+            args->
+            val location=HomeFragmentArgs.fromBundle(args).location
+            if (location != null){
+
+                latitude= location.latitude
+                longitude=location.longitude
+
+                Log.i("mapLocation", "setUpLocationParameters: "+latitude)
+
+
+            }else{
+
+                latitude=latitudeOfLocation
+                longitude=longitudeOfLocation
+
+                Log.i("else", "setUpLocationParameters: "+latitude)
+            }
+
+
+        }
+
+    }
 
 }
 

@@ -2,32 +2,37 @@ package com.example.weatherforecastapp.home.viewmodel
 
 import SettingsViewModel
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.example.weatherforecastapp.model.ForeCastWeatherResponse
 import com.example.weatherforecastapp.model.WeatherRepository
-import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModelFactory
 import com.example.weatherforecastapp.utilities.ForecastWeatherState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import org.intellij.lang.annotations.Language
-import kotlin.math.log
 
 
 class HomeViewModel(private val _irepo:WeatherRepository):ViewModel() {
+
     private val _weatherResponseState= MutableStateFlow<ForecastWeatherState>(ForecastWeatherState.Loading)
     val weatherResponseState: StateFlow<ForecastWeatherState> = _weatherResponseState
+
+
+    private val _weatherResponse: MutableLiveData<ForeCastWeatherResponse> = MutableLiveData()
+    val weatherResponse: LiveData<ForeCastWeatherResponse> = _weatherResponse
+
+
 
 
 
 
     fun getRemoteForecastWeather(latitude:Double,longitude:Double,tempUnit:String,windSpeedUnit:String,language: String){
         // coroutines
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.Main){
 
             _irepo.getForecastWeather(latitude,longitude,tempUnit,language)
                 .catch { e->
@@ -37,14 +42,17 @@ class HomeViewModel(private val _irepo:WeatherRepository):ViewModel() {
 
                 }
                 .collect{
-                    weatherResponse->_weatherResponseState.value=ForecastWeatherState.Success(weatherResponse)
+                    weatherResponse->
+                    _weatherResponse.value = weatherResponse
+                    _weatherResponseState.value=ForecastWeatherState.Success(weatherResponse)
+
                     Log.i("succeded", "getRemoteForecastWeather: "+weatherResponse.city)
                 }
         }
     }
 
 
-    fun startHome(settingsViewModel: SettingsViewModel) {
+    fun startHome(settingsViewModel: SettingsViewModel, latitude:  Double, langitude: Double) {
         // Access saved settings
         val savedSettings = settingsViewModel.getSavedSettings()
 
@@ -68,9 +76,9 @@ class HomeViewModel(private val _irepo:WeatherRepository):ViewModel() {
 
         // Fetch weather data using determined parameters
         getRemoteForecastWeather(
-            latitude = 57.0,
-            longitude = -2.15,
-            tempUnit = targetTemperature,
+          latitude ,
+           langitude,
+            targetTemperature,
             targetWindSpeed,
             lang
 
@@ -78,7 +86,7 @@ class HomeViewModel(private val _irepo:WeatherRepository):ViewModel() {
     }
 
 
-    fun observeSetting(settingsViewModel: SettingsViewModel) {
+    fun observeSetting(settingsViewModel: SettingsViewModel,latitude:  Double, langitude: Double) {
 
 
         viewModelScope.launch {
@@ -100,8 +108,8 @@ class HomeViewModel(private val _irepo:WeatherRepository):ViewModel() {
 
 
                 getRemoteForecastWeather(
-                    latitude = 57.0,
-                    longitude = -2.15,
+                    latitude ,
+                    langitude ,
                     targetTemperature,
                     targetLanguage,
                     targetWindSpeed
@@ -115,7 +123,23 @@ class HomeViewModel(private val _irepo:WeatherRepository):ViewModel() {
 
 
 
-
-
 }
+
+/*
+       viewModelScope.launch(Dispatchers.IO) {
+            repo.getAllProducts()
+                .catch { e ->
+                    withContext(Dispatchers.Main) {
+                        _productsState.value = ApiState.Failure(e)
+                    }
+                }
+                .collect { productList ->
+                    withContext(Dispatchers.Main) {
+                        _products.value = productList
+                        _productsState.value = ApiState.Success(productList)
+                    }
+                }
+        }
+ */
+
 

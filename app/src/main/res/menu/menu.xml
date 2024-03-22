@@ -10,7 +10,7 @@
         android:icon="@drawable/settings"
         android:title="@string/setting" />
     <item
-        android:id="@+id/favouriteFragment"
+        android:id="@+id/favLocationsFragment"
         android:icon="@drawable/favourites"
         android:title="@string/favourite" />
 

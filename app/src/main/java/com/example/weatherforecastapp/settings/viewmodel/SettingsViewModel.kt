@@ -29,6 +29,7 @@ class SettingsViewModel(application: Application): ViewModel() {
 
         }
         _settings.tryEmit(updatedSettings)
+        Log.i("Emiit", "updateSettings: The Updated Temo Unit is ${_settings}")
 
     }
 

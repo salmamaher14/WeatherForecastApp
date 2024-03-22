@@ -33,4 +33,6 @@
     <string name="milesPerHour">Mile/hour</string>
     <string name="meterPerSecond">Meter/sec</string>
     <string name="windSpeed">Wind Speed</string>
+    <string name="saveLocation">Save Location</string>
+
 </resources>

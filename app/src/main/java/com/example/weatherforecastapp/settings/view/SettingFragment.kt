@@ -12,7 +12,6 @@ import com.example.weatherforecastapp.R
 import com.example.weatherforecastapp.model.SettingsData
 import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModelFactory
 import com.google.android.material.radiobutton.MaterialRadioButton
-import kotlin.math.log
 
 
 class SettingFragment : Fragment() {
@@ -63,6 +62,7 @@ class SettingFragment : Fragment() {
                 selectedSettings.selectedLocation = getString(R.string.gps)
                 Log.i("GPS", "setSetting: "+getString(R.string.gps))
                 viewModel.updateSettings(selectedSettings)
+                meterRadioButton.isChecked=false
             }
         }
 
@@ -71,6 +71,7 @@ class SettingFragment : Fragment() {
                 // Update selected location setting to Map
                 selectedSettings.selectedLocation = getString(R.string.map)
                 viewModel.updateSettings(selectedSettings)
+                gpsRadioButton.isChecked=false
 
             }
         }
@@ -81,6 +82,7 @@ class SettingFragment : Fragment() {
                 selectedSettings.selectedLanguage = getString(R.string.english)
                 Log.i("english", "setSetting: "+selectedSettings.selectedLanguage )
                 viewModel.updateSettings(selectedSettings)
+                arabicRadioButton.isChecked=false
             }
         }
 
@@ -89,6 +91,7 @@ class SettingFragment : Fragment() {
                 // Update selected language setting to Arabic
                 selectedSettings.selectedLanguage = getString(R.string.arabic)
                 viewModel.updateSettings(selectedSettings)
+                englishRadioButton.isChecked=false
             }
         }
 
@@ -97,6 +100,9 @@ class SettingFragment : Fragment() {
                 // Update selected temperature unit setting to Kelvin
                 selectedSettings.selectedTemperatureUnit = getString(R.string.kelvin)
                 viewModel.updateSettings(selectedSettings)
+
+                celsiusRadioButton.isChecked=false
+                fahrenheitRadioButton.isChecked=false
             }
         }
 
@@ -105,6 +111,8 @@ class SettingFragment : Fragment() {
                 // Update selected temperature unit setting to Celsius
                 selectedSettings.selectedTemperatureUnit = getString(R.string.celsius)
                 viewModel.updateSettings(selectedSettings)
+                kelvinRadioButton.isChecked=false
+                fahrenheitRadioButton.isChecked=false
             }
         }
 
@@ -113,6 +121,8 @@ class SettingFragment : Fragment() {
                 // Update selected temperature unit setting to Fahrenheit
                 selectedSettings.selectedTemperatureUnit = getString(R.string.fahrenheit)
                 viewModel.updateSettings(selectedSettings)
+                kelvinRadioButton.isChecked=false
+                celsiusRadioButton.isChecked=false
             }
         }
 
@@ -121,6 +131,7 @@ class SettingFragment : Fragment() {
                 // Update selected wind speed unit setting to Meter per Second
                 selectedSettings.selectedWindSpeedUnit = getString(R.string.meterPerSecond)
                 viewModel.updateSettings(selectedSettings)
+                milesRadioButton.isChecked=false
             }
         }
 
@@ -129,6 +140,7 @@ class SettingFragment : Fragment() {
                 // Update selected wind speed unit setting to Miles per Hour
                 selectedSettings.selectedWindSpeedUnit = getString(R.string.milesPerHour)
                 viewModel.updateSettings(selectedSettings)
+                meterRadioButton.isChecked=false
             }
         }
 

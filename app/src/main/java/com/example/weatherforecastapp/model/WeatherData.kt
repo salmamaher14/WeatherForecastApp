@@ -1,4 +1,8 @@
 package com.example.weatherforecastapp.model
+
+import androidx.room.Entity
+
+
 data class WeatherData(
     val dt: Long,
     val main: MainInfo,
