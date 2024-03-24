@@ -1,6 +1,6 @@
 package com.example.weatherforecastapp.model
 
-import androidx.room.Entity
+
 
 
 data class WeatherData(

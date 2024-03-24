@@ -12,12 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherforecastapp.R
-import com.example.weatherforecastapp.WeatherLocalDataSourceImpl
 import com.example.weatherforecastapp.favlocations.viewmodel.FavLocationsViewModel
 import com.example.weatherforecastapp.favlocations.viewmodel.FavLocationsViewModelFactory
+import com.example.weatherforecastapp.local.WeatherLocalDataSourceImpl
 import com.example.weatherforecastapp.model.LocationData
-import com.example.weatherforecastapp.model.WeatherRepositoryImpl
 import com.example.weatherforecastapp.network.WeatherRemoteDataSourceImpl
+import com.example.weatherforecastapp.repo.WeatherRepositoryImpl
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -104,7 +104,8 @@ class FavLocationsFragment : Fragment(),OnFavLocationClickListener,OnRemoveLocat
         favFactory =
             FavLocationsViewModelFactory(
                 WeatherRepositoryImpl.getInstance(
-                WeatherRemoteDataSourceImpl.getInstance(),WeatherLocalDataSourceImpl(requireContext())))
+                WeatherRemoteDataSourceImpl.getInstance(), WeatherLocalDataSourceImpl(requireContext())
+                ))
         favViewModel = ViewModelProvider(this, favFactory).get(FavLocationsViewModel::class.java)
     }
 

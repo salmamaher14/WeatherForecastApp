@@ -2,8 +2,7 @@ package com.example.weatherforecastapp.favlocations.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.weatherforecastapp.home.viewmodel.HomeViewModel
-import com.example.weatherforecastapp.model.WeatherRepository
+import com.example.weatherforecastapp.repo.WeatherRepository
 
 class FavLocationsViewModelFactory (private val _repo: WeatherRepository): ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

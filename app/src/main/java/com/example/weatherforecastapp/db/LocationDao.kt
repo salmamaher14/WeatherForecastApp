@@ -1,4 +1,4 @@
-package com.example.weatherforecastapp
+package com.example.weatherforecastapp.db
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -9,13 +9,13 @@ import com.example.weatherforecastapp.model.LocationData
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface WeatherDao{
+interface LocationDao{
 
-    @Query("SELECT * FROM favLocations_database")
+    @Query("SELECT * FROM fav_locations")
      fun getAllStoredLocations(): Flow<List<LocationData>>
 
     @Insert (onConflict= OnConflictStrategy.IGNORE)
-    suspend fun insert(location: LocationData): Long
+    suspend fun insertLocation(location: LocationData): Long
     @Delete
     suspend fun delete(location: LocationData):Int
 

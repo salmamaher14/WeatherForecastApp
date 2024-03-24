@@ -4,10 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherforecastapp.model.ForeCastWeatherResponse
 import com.example.weatherforecastapp.model.LocationData
-import com.example.weatherforecastapp.model.WeatherData
-import com.example.weatherforecastapp.model.WeatherRepository
+import com.example.weatherforecastapp.repo.WeatherRepository
 import com.example.weatherforecastapp.utilities.ForecastWeatherState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
-class FavLocationsViewModel (private  val _irepo:WeatherRepository): ViewModel(){
+class FavLocationsViewModel (private  val _irepo: WeatherRepository): ViewModel(){
 
     private val _weatherResponseState= MutableStateFlow<ForecastWeatherState>(ForecastWeatherState.Loading)
     val weatherResponseState: StateFlow<ForecastWeatherState> = _weatherResponseState

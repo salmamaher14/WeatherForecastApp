@@ -5,7 +5,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "favLocations_database")
+@Entity(tableName = "fav_locations")
 data class LocationData(
     @PrimaryKey val cityName: String,
     val latitude: Double,

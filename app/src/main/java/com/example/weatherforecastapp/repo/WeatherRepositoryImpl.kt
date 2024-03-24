@@ -1,5 +1,9 @@
-package com.example.weatherforecastapp.model
-import com.example.weatherforecastapp.WeatherLocalDataSource
+package com.example.weatherforecastapp.repo
+import com.example.weatherforecastapp.local.WeatherLocalDataSource
+import com.example.weatherforecastapp.model.CurrWeatherResponse
+import com.example.weatherforecastapp.model.ForeCastWeatherResponse
+import com.example.weatherforecastapp.model.LocationData
+import com.example.weatherforecastapp.model.WeatherAlert
 import com.example.weatherforecastapp.network.RetrofitHelper
 import com.example.weatherforecastapp.network.WeatherRemoteDataSource
 import com.example.weatherforecastapp.network.WeatherService
@@ -63,6 +67,14 @@ class WeatherRepositoryImpl private constructor(
 
     override suspend fun getStoredLocations(): Flow<List<LocationData>> {
       return weatherLocalDataSource.getStoredLocations()
+    }
+
+    override suspend fun getStoredWeatherAlerts(): Flow<List<WeatherAlert>> {
+        return  weatherLocalDataSource.getStoredWeatherAlerts()
+    }
+
+    override suspend fun insertWeatherAlert(alert: WeatherAlert) {
+       weatherLocalDataSource.insertWeatherAlert(alert)
     }
 
 

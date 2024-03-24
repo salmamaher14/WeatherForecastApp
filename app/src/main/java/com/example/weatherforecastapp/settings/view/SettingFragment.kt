@@ -1,6 +1,5 @@
 package com.example.weatherforecastapp.settings.view
 
-import SettingsViewModel
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.weatherforecastapp.R
+import com.example.weatherforecastapp.model.LocationData
 import com.example.weatherforecastapp.model.SettingsData
+import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModel
 import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModelFactory
 import com.google.android.material.radiobutton.MaterialRadioButton
 
@@ -50,28 +52,31 @@ class SettingFragment : Fragment() {
 
         selectedSettings = viewModel.getSavedSettings()
 
-        displaySavedSettings(selectedSettings)
+        displaySavedSettings(selectedSettings)  // display stored values in shared preferences
 
-        viewModel.updateSettings(selectedSettings)?:getDefaultSettings()
 
 
 
         gpsRadioButton.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // Update selected location setting to GPS
-                selectedSettings.selectedLocation = getString(R.string.gps)
+                selectedSettings.selectedLocationTool = getString(R.string.gps)
                 Log.i("GPS", "setSetting: "+getString(R.string.gps))
                 viewModel.updateSettings(selectedSettings)
-                meterRadioButton.isChecked=false
+                mapRadioButton.isChecked=false
+
             }
         }
 
         mapRadioButton.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // Update selected location setting to Map
-                selectedSettings.selectedLocation = getString(R.string.map)
-                viewModel.updateSettings(selectedSettings)
+                selectedSettings.selectedLocationTool = getString(R.string.map)
                 gpsRadioButton.isChecked=false
+                viewModel.updateSettings(selectedSettings)
+
+                val action = SettingFragmentDirections.actionSettingFragmentToMapFragment(fromSettingFragment =true)
+                findNavController().navigate(action)
 
             }
         }
@@ -181,9 +186,9 @@ class SettingFragment : Fragment() {
 
     fun  displaySavedSettings(savedSettings:SettingsData){
 
-        gpsRadioButton.isChecked = savedSettings.selectedLocation == getString(R.string.gps)
+        gpsRadioButton.isChecked = savedSettings.selectedLocationTool == getString(R.string.gps)
 
-        mapRadioButton.isChecked = savedSettings.selectedLocation == getString(R.string.map)
+        mapRadioButton.isChecked = savedSettings.selectedLocationTool == getString(R.string.map)
 
         englishRadioButton.isChecked = savedSettings.selectedLanguage == getString(R.string.english)
 
@@ -204,10 +209,12 @@ class SettingFragment : Fragment() {
     private fun getDefaultSettings(): SettingsData {
         // Initialize default settings here
         return SettingsData(
-            selectedLocation = getString(R.string.gps),
+            selectedLocationTool = getString(R.string.gps),
             selectedTemperatureUnit = getString(R.string.celsius),
             selectedWindSpeedUnit = getString(R.string.meterPerSecond),
-            selectedLanguage = getString(R.string.arabic)
+            selectedLanguage = getString(R.string.arabic),
+            selectedLocation = LocationData("",0.0,0.0)
+
         )
     }
 

@@ -14,16 +14,22 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 fun getAllDatesOfTheCurrentDate(weatherDataList: List<WeatherData>): List<WeatherData> {
 
+
     val currentDate = LocalDate.now()
 
     return weatherDataList
         .filter { weatherData ->
-            val date =
-                Instant.ofEpochSecond(weatherData.dt).atZone(ZoneId.systemDefault()).toLocalDate()
+            val dateTime = LocalDateTime.parse(weatherData.dt_txt, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+            val instant = dateTime.atZone(ZoneId.systemDefault()).toInstant()
+
+            val date = instant.atZone(ZoneId.systemDefault()).toLocalDate()
+
             date == currentDate
         }
 
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun getAllDatesExceptCurrentDate(weatherDataList: List<WeatherData>): List<WeatherData> {

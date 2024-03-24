@@ -1,3 +1,4 @@
+package com.example.weatherforecastapp.map
 import android.graphics.Color
 import android.graphics.Typeface
 import android.location.Geocoder
@@ -10,18 +11,19 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherforecastapp.R
-import com.example.weatherforecastapp.WeatherLocalDataSourceImpl
+
 import com.example.weatherforecastapp.favlocations.viewmodel.FavLocationsViewModel
 import com.example.weatherforecastapp.favlocations.viewmodel.FavLocationsViewModelFactory
+import com.example.weatherforecastapp.local.WeatherLocalDataSourceImpl
 import com.example.weatherforecastapp.model.LocationData
-import com.example.weatherforecastapp.model.WeatherRepositoryImpl
+import com.example.weatherforecastapp.model.SettingsData
 import com.example.weatherforecastapp.network.WeatherRemoteDataSourceImpl
-import com.google.android.gms.maps.CameraUpdateFactory
+import com.example.weatherforecastapp.repo.WeatherRepositoryImpl
+import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModel
+import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModelFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
@@ -35,6 +37,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var favViewModel:FavLocationsViewModel
     private lateinit var  favFactory:FavLocationsViewModelFactory
     private lateinit var selectedLocation:LocationData
+    private lateinit var settingsFactory: SettingsViewModelFactory
+    private lateinit var settingViewModel: SettingsViewModel
+
+    private lateinit var selectedSettings: SettingsData
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,7 +75,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
                 btnSaveLocation.setOnClickListener {
-                    favViewModel.insertLocation(selectedLocation)
+
+                    val args = MapFragmentArgs.fromBundle(requireArguments())
+                    if(args.fromSettingFragment){
+
+                        selectedSettings.selectedLocation=selectedLocation
+                        settingViewModel.updateSettings(selectedSettings)
+
+
+                    }else{
+                        favViewModel.insertLocation(selectedLocation)
+                    }
+
+
                     val snackbar = Snackbar.make(
                         requireView(),
                         "Do you want to save this location?",
@@ -147,9 +165,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun initMapFragmentParameters(){
 
+
         favFactory =
-            FavLocationsViewModelFactory(WeatherRepositoryImpl.getInstance(
-                WeatherRemoteDataSourceImpl.getInstance(),WeatherLocalDataSourceImpl(requireContext())))
+            FavLocationsViewModelFactory(
+                WeatherRepositoryImpl.getInstance(
+                WeatherRemoteDataSourceImpl.getInstance(), WeatherLocalDataSourceImpl(requireContext())
+                ))
         favViewModel = ViewModelProvider(this, favFactory).get(FavLocationsViewModel::class.java)
+
+        settingsFactory = SettingsViewModelFactory(requireActivity().application)
+        settingViewModel = ViewModelProvider(this, settingsFactory).get(SettingsViewModel::class.java)
+
+        selectedSettings = settingViewModel.getSavedSettings()
     }
 }
+
+/*
+  val snackbar = Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT)
+    snackbar.show()
+ */
