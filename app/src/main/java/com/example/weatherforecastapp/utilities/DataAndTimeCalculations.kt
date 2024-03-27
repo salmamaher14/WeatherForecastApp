@@ -9,6 +9,9 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -60,42 +63,17 @@ fun metersPerSecondToMilesPerHour(mps: Double): Double {
     return mps * 2.23694
 }
 
-fun checkWindSpeedUnit(){
 
+
+fun getCurrentDate(): String {
+    val calendar = Calendar.getInstance()
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    return dateFormat.format(calendar.time)
 }
 
 
 
-/*
 
-@RequiresApi(Build.VERSION_CODES.O)
-fun getSeparateDataTimeAndDay(dateAndTime: String): Pair<LocalDateTime, DayOfWeek> {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    val formattedDateAndTime = LocalDateTime.parse(dateAndTime, formatter)
-    val dayOfWeek = formattedDateAndTime.dayOfWeek
-    return Pair(formattedDateAndTime, dayOfWeek)
-}
- */
-
-
-/*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
-fun main() {
-    val inputDateTime = "2022-03-15 15:00:00"
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    val dateTime = LocalDateTime.parse(inputDateTime, formatter)
-
-    val date = dateTime.toLocalDate()
-    val time = dateTime.toLocalTime()
-
-   val timeFormatted = time.format(DateTimeFormatter.ofPattern("h:mm a"))
-
-    println("Date: $date")
-    println("Time: $timeFormatted")
-}
- */
 
 
 

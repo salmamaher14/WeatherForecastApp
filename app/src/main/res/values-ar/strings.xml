@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">تطبيق توقعات الطقس</string>
+    <string name="hello_blank_fragment">مرحبًا بالقالب الفارغ</string>
+    <string name="Humidity">الرطوبة</string>
+    <string name="clouds">السحب</string>
+    <string name="Clouds">السحب</string>
+    <string name="Pressure">الضغط</string>
+    <string name="windspeed">سرعة الرياح</string>
+    <string name="weather">الطقس</string>
+    <string name="city_name">اسم المدينة</string>
+    <string name="dummy_date">13 مارس 2024</string>
+    <string name="temp_celsius">°م</string>
+    <string name="temp_fahrenheit">°ف</string>
+    <string name="am">ص</string>
+    <string name="pm">م</string>
+    <string name="dayName">الإثنين</string>
+    <string name="home">الصفحة الرئيسية</string>
+    <string name="setting">الإعدادات</string>
+    <string name="favourite">المفضلة</string>
+    <string name="alert">التنبيه</string>
+    <string name="weatherTitle">حالة الطقس</string>
+    <string name="gps">GPS</string>
+    <string name="location">الموقع</string>
+    <string name="map">الخريطة</string>
+    <string name="english">الإنجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="language">اللغة</string>
+    <string name="kelvin">كلفن</string>
+    <string name="temperature">درجة الحرارة</string>
+    <string name="celsius">درجة مئوية</string>
+    <string name="fahrenheit">درجة فهرنهايت</string>
+    <string name="milesPerHour">ميل/الساعة</string>
+    <string name="meterPerSecond">متر/الثانية</string>
+    <string name="windSpeed">سرعة الرياح</string>
+    <string name="saveLocation">حفظ الموقع</string>
+</resources>

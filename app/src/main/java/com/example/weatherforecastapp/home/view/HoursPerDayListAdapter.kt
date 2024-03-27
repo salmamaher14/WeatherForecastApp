@@ -42,7 +42,7 @@ class HoursPerDayListAdapter:ListAdapter<WeatherData,HoursPerDayListAdapter.Hour
             .error(R.drawable.ic_launcher_foreground)
             .into(holder.weatherStatus)
 
-        holder.temp.text = currentHour.main.temp_kf.toString()
+        holder.temp.text = currentHour.main.temp.toString()
 
     }
 

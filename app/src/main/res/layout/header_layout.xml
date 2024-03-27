@@ -32,8 +32,7 @@
         android:textStyle="bold"
         android:text="@string/weatherTitle"
         app:layout_constraintStart_toEndOf="@id/weatherIcon"
-        app:layout_constraintTop_toTopOf="@id/weatherIcon"
-        />
+        app:layout_constraintTop_toTopOf="@id/weatherIcon" />
 
 
 

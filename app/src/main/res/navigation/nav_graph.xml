@@ -31,7 +31,7 @@
     <fragment
         android:id="@+id/favLocationsFragment"
         android:name="com.example.weatherforecastapp.favlocations.view.FavLocationsFragment"
-        android:label="fragment_fav_locations"
+        android:label="Favourites"
         tools:layout="@layout/fragment_fav_locations">
         <action
             android:id="@+id/action_favLocationsFragment_to_mapFragment"
@@ -43,10 +43,10 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.weatherforecastapp.map.MapFragment"
-        android:label="MapFragment" >
+        android:label="Map">
         <argument
             android:name="fromSettingFragment"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
 </navigation>

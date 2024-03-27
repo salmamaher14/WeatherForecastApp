@@ -1,9 +1,14 @@
 package com.example.weatherforecastapp.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 
+@Entity(tableName = "weather_data")
 
 data class WeatherData(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
     val dt: Long,
     val main: MainInfo,
     val weather: List<Weather>,
@@ -27,8 +32,9 @@ data class MainInfo(
     val humidity: Int,
     val temp_kf: Double
 )
-
+@Entity(tableName = "weather")
 data class Weather(
+    @PrimaryKey
     val id: Int,
     val main: String,
     val description: String,
@@ -52,8 +58,9 @@ data class Rain(
 data class Sys(
     val pod: String
 )
-
+@Entity(tableName = "city")
 data class City(
+    @PrimaryKey
     val id: Int,
     val name: String,
     val coord: Coord,

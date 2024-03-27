@@ -157,7 +157,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initUi() {
-        btnSaveLocation = requireView().findViewById(R.id.btnOpenMap)
+        btnSaveLocation = requireView().findViewById(R.id.btnAddAlert)
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.mapViewId) as SupportMapFragment
         mapFragment.getMapAsync(this)

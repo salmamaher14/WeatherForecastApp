@@ -13,6 +13,7 @@ import com.example.weatherforecastapp.model.LocationData
 import com.example.weatherforecastapp.model.SettingsData
 import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModel
 import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModelFactory
+import com.example.weatherforecastapp.utilities.LocaleManager
 import com.google.android.material.radiobutton.MaterialRadioButton
 
 
@@ -88,6 +89,9 @@ class SettingFragment : Fragment() {
                 Log.i("english", "setSetting: "+selectedSettings.selectedLanguage )
                 viewModel.updateSettings(selectedSettings)
                 arabicRadioButton.isChecked=false
+
+                LocaleManager.setLocale(requireContext(),"en")
+                requireActivity().recreate()
             }
         }
 
@@ -97,6 +101,9 @@ class SettingFragment : Fragment() {
                 selectedSettings.selectedLanguage = getString(R.string.arabic)
                 viewModel.updateSettings(selectedSettings)
                 englishRadioButton.isChecked=false
+
+                LocaleManager.setLocale(requireContext(),"ar")
+                requireActivity().recreate()
             }
         }
 
@@ -220,6 +227,9 @@ class SettingFragment : Fragment() {
 
 
 }
+
+// object locale manager
+
 
 
 

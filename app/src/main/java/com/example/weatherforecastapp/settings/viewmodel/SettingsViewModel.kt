@@ -55,10 +55,10 @@ class SettingsViewModel(application: Application): ViewModel() {
         }
 
         return SettingsData(
-            selectedLocationTool = settingSharedPreferences.getString("selectedLocationTool", "") ?: "Gps",
-            selectedTemperatureUnit = settingSharedPreferences.getString("selectedTemperatureUnit", "") ?: "Meter/sec",
-            selectedWindSpeedUnit = settingSharedPreferences.getString("selectedWindSpeedUnit", "") ?: "Celsius",
-            selectedLanguage = settingSharedPreferences.getString("selectedLanguage", "") ?: "Arabic",
+            selectedLocationTool = settingSharedPreferences.getString("selectedLocationTool", "Gps") ?:"Gps",
+            selectedTemperatureUnit = settingSharedPreferences.getString("selectedTemperatureUnit", "Celsius")?:"Celsius",
+            selectedWindSpeedUnit = settingSharedPreferences.getString("selectedWindSpeedUnit", "Meter/sec") ?: "Meter/sec",
+            selectedLanguage = settingSharedPreferences.getString("selectedLanguage", "Arabic") ?: "Arabic",
             selectedLocation = locationData ?: LocationData("", 0.0, 0.0) // Provide default empty LocationData if null
         )
     }

@@ -70,24 +70,24 @@ class FavLocationsFragment : Fragment(),OnFavLocationClickListener,OnRemoveLocat
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        initFavFragmentParameters()
-        setRecyclerViewParameters()
-        favViewModel.favLocations.observe(
-            viewLifecycleOwner, object : Observer<List<LocationData>> {
-                override fun onChanged(locationsList: List<LocationData>) {
-                    favLocationsAdapter.submitList(locationsList)
-                }
-
-            }
-        )
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        initFavFragmentParameters()
+//        setRecyclerViewParameters()
+//        favViewModel.favLocations.observe(
+//            viewLifecycleOwner, object : Observer<List<LocationData>> {
+//                override fun onChanged(locationsList: List<LocationData>) {
+//                    favLocationsAdapter.submitList(locationsList)
+//                }
+//
+//            }
+//        )
+//    }
 
     fun initUi(){
 
        favLocationsRv= requireView().findViewById(R.id.favLocationsRecyclerView)
-        btnOpenMap= requireView().findViewById(R.id.btnOpenMap)
+        btnOpenMap= requireView().findViewById(R.id.btnAddAlert)
 
     }
 
@@ -131,6 +131,9 @@ class FavLocationsFragment : Fragment(),OnFavLocationClickListener,OnRemoveLocat
         val alert = dialogBuilder.create()
         alert.show()
     }
+
+
+
 
 
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Selected Date TextView -->
+    <TextView
+        android:id="@+id/tvSelectedDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selected Date: " />
+
+    <!-- Selected Time TextView -->
+    <TextView
+        android:id="@+id/tvSelectedTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selected Time: " />
+
+    <!-- RadioGroup for Notification and Alarm -->
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Notification RadioButton -->
+        <RadioButton
+            android:id="@+id/radioButtonNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notification" />
+
+        <!-- Alarm RadioButton -->
+        <RadioButton
+            android:id="@+id/radioButtonAlarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alarm" />
+    </RadioGroup>
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_gravity="end" />
+
+</LinearLayout>

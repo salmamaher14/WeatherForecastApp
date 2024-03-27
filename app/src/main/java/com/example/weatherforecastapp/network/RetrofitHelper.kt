@@ -9,7 +9,7 @@ object RetrofitHelper {
         .baseUrl(BASE_URL)
         .build()
     val retrofitService: WeatherService by lazy {
-        RetrofitHelper.retrofit.create(WeatherService::class.java)
+        retrofit.create(WeatherService::class.java)
     }
 }
 

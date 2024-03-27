@@ -1,6 +1,5 @@
 package com.example.weatherforecastapp.favlocations.view
 
-import com.example.weatherforecastapp.home.view.WeatherDataDiffUtil
 
 
 import android.os.Build
