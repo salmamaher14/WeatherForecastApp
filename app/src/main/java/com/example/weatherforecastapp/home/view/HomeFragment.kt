@@ -27,6 +27,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weatherforecastapp.R
+import com.example.weatherforecastapp.home.view.HomeFragment.LocationParameters.count
+import com.example.weatherforecastapp.home.view.HomeFragment.LocationParameters.fromFav
+import com.example.weatherforecastapp.home.view.HomeFragment.LocationParameters.inCheckLocation
+import com.example.weatherforecastapp.home.view.HomeFragment.LocationParameters.isGpsLocation
+import com.example.weatherforecastapp.home.view.HomeFragment.LocationParameters.isMapLocation
+import com.example.weatherforecastapp.home.view.HomeFragment.LocationParameters.resumeCount
+import com.example.weatherforecastapp.home.view.HomeFragment.LocationParameters.targetLanguage
+import com.example.weatherforecastapp.home.view.HomeFragment.LocationParameters.targetTempUnit
 import com.example.weatherforecastapp.home.viewmodel.HomeViewModel
 import com.example.weatherforecastapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherforecastapp.local.WeatherLocalDataSourceImpl
@@ -49,7 +57,6 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
@@ -81,14 +88,25 @@ class HomeFragment : Fragment() {
     private lateinit var weatherDescriptionTextView: MaterialTextView
     private lateinit var locationTextView: MaterialTextView
     private lateinit var dateTextView: MaterialTextView
-    private var isGpsLocation: Boolean = false
-    private var isMapLocation: Boolean = false
 
 
-    private var gpslatitude: Double = 0.0
-    private var gpslongitude: Double = 0.0
-    private var mapLatitude: Double = 0.0
-    private var mapLongitude: Double = 0.0
+
+
+    object LocationParameters {
+        var gpsLatitude: Double = 0.0
+        var gpsLongitude: Double = 0.0
+        var mapLatitude: Double = 0.0
+        var mapLongitude: Double = 0.0
+        var targetLanguage:String=""
+        var targetTempUnit:String=""
+        var count:Int=0
+        var resumeCount:Int=0
+        var isGpsLocation: Boolean = false
+        var isMapLocation: Boolean = false
+        var fromFav:Boolean=false
+        var inCheckLocation:Int= 0
+    }
+
 
 
     override fun onCreateView(
@@ -102,7 +120,7 @@ class HomeFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingPermission")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override  fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
@@ -112,36 +130,35 @@ class HomeFragment : Fragment() {
 
         initializeHomeParameters()
 
-        arguments?.let { args ->
-            val favLocation = HomeFragmentArgs.fromBundle(args).location
-            if (favLocation != null) {
-
-                activity?.title = "Favourites"
 
 
-                homeViewModel.getSettingConfiguration(
-                    settingsViewModel,
-                    favLocation.latitude,
-                    favLocation.longitude
-                )
+
+        val favLocation = HomeFragmentArgs.fromBundle(requireArguments()).location
+        if (favLocation != null) {
+            fromFav=true
+            Log.i("from fav", "onViewCreated: " + favLocation.cityName)
+            Log.i("favLocation", "onViewCreated: "+favLocation.latitude+favLocation.longitude)
 
 
-            }else{
-                checkLocationProvideGpsOrMap()
-            }
+            homeViewModel.getSettingConfiguration(settingsViewModel)
+
+            homeViewModel.fetchFavWeatherFromApi(favLocation.latitude, favLocation.longitude)
+        } else {
+            LocationParameters.count += 1
+            Log.i("beforesetting${LocationParameters.count}", "onViewCreated: ")
+
+            homeViewModel.observeSetting(settingsViewModel)
+            checkLocationProvideGpsOrMap()
+
+            Log.i("afterobserving${LocationParameters.count}", "onViewCreated: ")
         }
 
 
 
-        if (isMapLocation)
-
-            homeViewModel.observeSetting(settingsViewModel, mapLatitude, mapLongitude)
-        else
-
-            homeViewModel.observeSetting(settingsViewModel, gpslatitude, gpslongitude)
 
         lifecycleScope.launch(Dispatchers.Main) {
-            homeViewModel.weatherResponseState.collectLatest { result ->
+            homeViewModel.dbWeatherResponseState.collect { result ->
+                Log.i("fetchfromdb", "onViewCreated: ")
                 when (result) {
 
                     is ForecastWeatherState.Loading -> {
@@ -153,7 +170,7 @@ class HomeFragment : Fragment() {
 
                     is ForecastWeatherState.Success -> {
                         Log.i(
-                            "setHoursPerDayInHome",
+                            "setHoursPerDayInHomeDb",
                             "setHoursPerDayInHome: " + result.data.list.get(0)
                         )
                         loaderView.visibility = View.GONE
@@ -178,7 +195,7 @@ class HomeFragment : Fragment() {
 
                         Log.i(
                             "currList",
-                            "setHoursPerDayInHome: " + getAllDatesOfTheCurrentDate(result.data.list)
+                            "setHoursPerDayInHome: " + result.data.city.name
                         )
 
                     }
@@ -194,6 +211,136 @@ class HomeFragment : Fragment() {
 
             }
         }
+
+
+
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            homeViewModel.apiWeatherResponseState.collect { result ->
+
+                Log.i("apiiii", "onViewCreated: "+result)
+
+                when (result) {
+
+                    is ForecastWeatherState.Loading -> {
+
+                        loaderView.visibility = View.VISIBLE
+                        hoursRecyclerView.visibility = View.GONE
+
+                    }
+
+                    is ForecastWeatherState.Success -> {
+                        Log.i(
+                            "setHoursPerDayInHomeDb",
+                            "setHoursPerDayInHome: " + result.data.list.get(0)
+                        )
+                        loaderView.visibility = View.GONE
+
+                        hoursRecyclerView.visibility = View.VISIBLE
+
+                        houresPerDayAdapter.submitList(getAllDatesOfTheCurrentDate(result.data.list))
+                        Log.i("houresPerDayAdapter", "setHoursPerDayInHome: " + result.data.list)
+                        Log.i(
+                            "testDate",
+                            result.data.list[0].dt_txt.split(" ")[0] + " " + getCurrentDate()
+                        )
+
+
+                        daysListAdapter.submitList(getAllDatesExceptCurrentDate(result.data.list))
+
+                        dateTextView.text =
+                            getSeparateDataAndTime(result.data.list.get(0).dt_txt.toString()).second.toString() + " "
+                        getSeparateDataAndTime(result.data.list.get(0).dt_txt.toString()).first
+
+                        setAdditionalWeatherInfo(result)
+
+                        Log.i(
+                            "currList",
+                            "setHoursPerDayInHome: " + result.data.city.name
+                        )
+
+                    }
+
+                    is ForecastWeatherState.Failure -> {
+                        loaderView.visibility = View.GONE
+                        hoursRecyclerView.visibility = View.GONE
+                        val errorMessage =
+                            "Error: ${result.msg}" // Extracting error message from Throwable
+                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+                    }
+                }
+
+            }
+        }
+
+
+
+
+
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            homeViewModel.favResponseState.collect { result ->
+
+
+                when (result) {
+
+
+                    is ForecastWeatherState.Loading -> {
+
+                        loaderView.visibility = View.VISIBLE
+                        hoursRecyclerView.visibility = View.GONE
+
+                    }
+
+                    is ForecastWeatherState.Success -> {
+
+                        Log.i("fetchfav", "onViewCreated: "+result.data.city.name)
+
+
+                        Log.i(
+                            "setHoursPerDayInHomeApi",
+                            "setHoursPerDayInHome: " + result.data.list.get(0)
+                        )
+                        loaderView.visibility = View.GONE
+
+                        hoursRecyclerView.visibility = View.VISIBLE
+
+                        houresPerDayAdapter.submitList(getAllDatesOfTheCurrentDate(result.data.list))
+                        Log.i("houresPerDayAdapter", "setHoursPerDayInHome: " + result.data.list)
+                        Log.i(
+                            "testDate",
+                            result.data.list[0].dt_txt.split(" ")[0] + " " + getCurrentDate()
+                        )
+
+
+                        daysListAdapter.submitList(getAllDatesExceptCurrentDate(result.data.list))
+
+                        dateTextView.text =
+                            getSeparateDataAndTime(result.data.list.get(0).dt_txt.toString()).second.toString() + " "
+                        getSeparateDataAndTime(result.data.list.get(0).dt_txt.toString()).first
+
+                        setAdditionalWeatherInfo(result)
+
+                        Log.i(
+                            "currList",
+                            "setHoursPerDayInHome: " + result.data.city.name
+                        )
+
+                    }
+
+                    is ForecastWeatherState.Failure -> {
+                        loaderView.visibility = View.GONE
+                        hoursRecyclerView.visibility = View.GONE
+                        val errorMessage =
+                            "Error: ${result.msg}" // Extracting error message from Throwable
+                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+                    }
+                }
+
+            }
+        }
+
+
 
 
     }
@@ -258,10 +405,10 @@ class HomeFragment : Fragment() {
                     WeatherLocalDataSourceImpl(requireContext())
                 ), requireContext().applicationContext as Application
             )
-        homeViewModel = ViewModelProvider(this, homeFactory).get(HomeViewModel::class.java)
+        homeViewModel = ViewModelProvider(requireActivity(), homeFactory).get(HomeViewModel::class.java)
         settingsFactory = SettingsViewModelFactory(requireActivity().application)
         settingsViewModel =
-            ViewModelProvider(this, settingsFactory).get(SettingsViewModel::class.java)
+            ViewModelProvider(requireActivity(), settingsFactory).get(SettingsViewModel::class.java)
 
 
     }
@@ -288,6 +435,8 @@ class HomeFragment : Fragment() {
         currentTempTextView.text = result.data.list.get(0).main.temp.toString()
 
         weatherDescriptionTextView.text = result.data.list.get(0).weather[0].description
+        Log.i("TAG", "setAdditionalWeatherInf ${result.data.city.name}")
+
         locationTextView.text = result.data.city.name
 
 
@@ -322,6 +471,7 @@ class HomeFragment : Fragment() {
 
 
     fun enableLocationServices() {
+        Log.i("enable ", "enableLocationServices: ")
         Toast.makeText(requireContext(), "Turn on location", Toast.LENGTH_LONG).show()
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivity(intent)
@@ -329,13 +479,12 @@ class HomeFragment : Fragment() {
 
     fun isLocationEnabled(context: Context): Boolean {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER
-        )
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
     @SuppressLint("MissingPermission")
     fun getFreshLocation() {
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         fusedLocationClient.requestLocationUpdates(
@@ -344,37 +493,40 @@ class HomeFragment : Fragment() {
             }.build(),
 
             object : LocationCallback() {
-
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
                     val location = locationResult.lastLocation
 
                     if (location != null) {
+                        LocationParameters.gpsLatitude = location.latitude
+                        LocationParameters.gpsLongitude = location.longitude
 
-                        gpslatitude = location.latitude
-
-                        gpslongitude = location.longitude
-
-                        homeViewModel.getSettingConfiguration(
-                            settingsViewModel,
-                            gpslatitude,
-                            gpslongitude,
-                            //source.API
-
+                        Log.i(
+                            "gpslocation",
+                            "onLocationResult: ${LocationParameters.gpsLatitude} + ${LocationParameters.gpsLongitude}"
                         )
 
-                        Log.i("gpslocation", "onLocationResult: $gpslatitude + $gpslongitude")
+                        // Call a coroutine to observe settings
 
+
+
+                        homeViewModel.fetchForecastWeather(
+                            settingsViewModel,
+                            LocationParameters.gpsLatitude,
+                            LocationParameters.gpsLongitude
+                        )
+
+
+                    } else {
+                        Log.i("locationgps", "onLocationResult: $location")
                     }
-
                 }
-
             },
             Looper.myLooper()
         )
-
     }
+
 
 
     override fun onRequestPermissionsResult(
@@ -396,9 +548,13 @@ class HomeFragment : Fragment() {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun checkLocationProvideGpsOrMap() {
+     fun checkLocationProvideGpsOrMap() {
+        Log.i("IncheckLocation ${inCheckLocation++}", "checkLocationProvideGpsOrMap: ")
 
         val savedSettings = settingsViewModel.getSavedSettings()
+
+        targetLanguage=savedSettings.selectedLanguage
+        targetTempUnit=savedSettings.selectedTemperatureUnit
         Log.i("savedsetting", "checkLocationProvideGpsOrMap: " + savedSettings)
         var locationTool = savedSettings.selectedLocationTool
         Log.i("locationtool", "checkLocationProvideGpsOrMap: " + locationTool)
@@ -412,7 +568,8 @@ class HomeFragment : Fragment() {
         } else {
             isMapLocation = true
             Log.i("yesMap", "checkLocationProvideGpsOrMap: ")
-            val locationData = settingsViewModel.getSavedSettings().selectedLocation
+            val locationData = settingsViewModel.getSavedSettings().mapLocation  // location of map
+            Log.i("maplocation", "checkLocationProvideGpsOrMap: "+locationData)
             getLocationByMap(locationData)
 
         }
@@ -435,15 +592,13 @@ class HomeFragment : Fragment() {
 
                     getFreshLocation()
 
-                    homeViewModel.getSettingConfiguration(
-                        settingsViewModel,
-                        gpslatitude,
-                        gpslongitude
-                    )
+
                 }
             } else {
                 Log.i("in else", "onStart: ")   //  take permission from user
                 if (isAdded && activity != null) {
+
+                    Log.i("isadded", "getLocationByGps: ")
 
                     // Fragment is attached to an activity
                     ActivityCompat.requestPermissions(
@@ -467,23 +622,43 @@ class HomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun getLocationByMap(location: LocationData) {
 
+        LocationParameters.mapLatitude = location.latitude
+        LocationParameters.mapLongitude = location.longitude
+        Log.i("in getlocation by map", "getLocationByMap: "+LocationParameters.mapLatitude+LocationParameters.mapLongitude)
 
-                mapLatitude = location.latitude
-                mapLongitude = location.longitude
 
-                homeViewModel.getSettingConfiguration(
-                    settingsViewModel,
-                    location.latitude,
-                    location.longitude
-                )
 
-            }
+        homeViewModel.fetchForecastWeather(
+            settingsViewModel,
+            LocationParameters.mapLatitude,
+            LocationParameters.mapLongitude
+        )
+
+
+
 
 
     }
+//
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    override fun onResume() {
+//        super.onResume()
+//
+//        if(!fromFav){
+//            checkLocationProvideGpsOrMap()
+//
+//
+//        }else{
+//            fromFav=false
+//        }
+//
+//
+//        Log.i("onresume+${resumeCount++}", "onResume: ")
+//
+//
+//    }
 
-
-
+}
 
 
 

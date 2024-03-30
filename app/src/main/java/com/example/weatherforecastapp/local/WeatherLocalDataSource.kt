@@ -17,7 +17,7 @@ interface WeatherLocalDataSource {
     suspend fun insertWeatherAlert(weatherAlert: WeatherAlert)
     suspend fun getAllStoredWeatherData(): Flow<ForeCastWeatherResponse>
     suspend fun insertWeatherObject(weatherData: ForeCastWeatherResponse)
-    suspend fun deleteWeatherObject(weatherData: ForeCastWeatherResponse)
+    suspend fun deleteWeatherObject()
 
 
 

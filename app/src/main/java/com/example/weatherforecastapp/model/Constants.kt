@@ -8,5 +8,7 @@ class Constants {
         const val latitudeThreshold = 0.001
         val REQUEST_LOCATION_CODE = 3456
         private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
+        const val CHANNEL_ID = "weather_alert_channel"
+        const val NOTIFICATION_ID = 123
     }
 }

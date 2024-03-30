@@ -17,7 +17,7 @@ interface LocationDao{
     @Insert (onConflict= OnConflictStrategy.IGNORE)
     suspend fun insertLocation(location: LocationData): Long
     @Delete
-    suspend fun delete(location: LocationData):Int
+    suspend fun deleteLocation(location: LocationData):Int
 
 
 }

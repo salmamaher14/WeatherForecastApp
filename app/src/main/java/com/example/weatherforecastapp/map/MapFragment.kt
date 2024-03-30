@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.weatherforecastapp.R
+import com.example.weatherforecastapp.favlocations.view.FavLocationsFragmentDirections
 
 import com.example.weatherforecastapp.favlocations.viewmodel.FavLocationsViewModel
 import com.example.weatherforecastapp.favlocations.viewmodel.FavLocationsViewModelFactory
@@ -77,13 +79,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 btnSaveLocation.setOnClickListener {
 
                     val args = MapFragmentArgs.fromBundle(requireArguments())
-                    if(args.fromSettingFragment){
 
-                        selectedSettings.selectedLocation=selectedLocation
+                    if(args.fromSettingFragment) {
+
+                        selectedSettings.mapLocation = selectedLocation
                         settingViewModel.updateSettings(selectedSettings)
+                    }
 
 
-                    }else{
+//                    }else if(args.fromAlertFragment){
+//
+//                        val action =MapFragmentDirections.actionMapFragmentToAlertFragment(
+//                            selectedLocation
+//                        )
+//                        findNavController().navigate(action)
+//
+////                        selectedSettings.mapLocation=selectedLocation
+////
+////                        settingViewModel.updateSettings(selectedSettings)
+//                    }
+
+
+                    else{
                         favViewModel.insertLocation(selectedLocation)
                     }
 

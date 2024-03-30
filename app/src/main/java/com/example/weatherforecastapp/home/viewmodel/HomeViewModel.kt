@@ -1,9 +1,6 @@
 package com.example.weatherforecastapp.home.viewmodel
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherforecastapp.model.Constants.Companion.latitudeThreshold
@@ -11,213 +8,264 @@ import com.example.weatherforecastapp.model.Constants.Companion.longitudeThresho
 import com.example.weatherforecastapp.model.ForeCastWeatherResponse
 import com.example.weatherforecastapp.repo.WeatherRepository
 import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModel
-import com.example.weatherforecastapp.utilities.DataSource
 import com.example.weatherforecastapp.utilities.ForecastWeatherState
-import com.example.weatherforecastapp.utilities.LocaleManager
 import com.example.weatherforecastapp.utilities.getCurrentDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlin.math.log
 
 
-class HomeViewModel(private val _irepo: WeatherRepository,private val application: Application):ViewModel() {
+class HomeViewModel(private val _irepo: WeatherRepository):ViewModel() {
 
-    private val _weatherResponseState =
-
+    private val _apiWeatherResponseState =
         MutableStateFlow<ForecastWeatherState>(ForecastWeatherState.Loading)
-    val weatherResponseState: StateFlow<ForecastWeatherState> = _weatherResponseState
 
-
-    private val _weatherResponse: MutableLiveData<ForeCastWeatherResponse> =
-        MutableLiveData()  // i will use it to collect
-    val weatherResponse: LiveData<ForeCastWeatherResponse> = _weatherResponse
-
-    var isDataInsertion = false
+    val apiWeatherResponseState: StateFlow<ForecastWeatherState> = _apiWeatherResponseState
 
 
 
-     fun getRemoteForecastWeather(
-        latitude: Double,
-        longitude: Double,
-        tempUnit: String,
-        language: String
-    ) {// when
-        // coroutines
-        Log.i("requestCoords", "getRemoteForecastWeather: $latitude, $longitude")
+    private val _dbWeatherResponseState =
+        MutableStateFlow<ForecastWeatherState>(ForecastWeatherState.Loading)
 
-          isDataInsertion = false
-
-         viewModelScope.launch (Dispatchers.IO){
-             _irepo.getAllStoredWeatherData()
-
-                 .collect { storedWeatherData ->
-                     if(!isDataInsertion ){
-
-                         if (storedWeatherData != null) {
-                             Log.i("in dbCollect", "getRemoteForecastWeather: $storedWeatherData")
+    val dbWeatherResponseState: StateFlow<ForecastWeatherState> = _dbWeatherResponseState
 
 
+    private  val  _favResponseState=
+        MutableStateFlow<ForecastWeatherState>(ForecastWeatherState.Loading)
 
-                             Log.i(
-                                 "testcoords",
-                                 "getRemoteForecastWeather: city.coord.lon: ${storedWeatherData.city.coord.lon}, " +
-                                         "longitude: $longitude, " +
-                                         "storedWeatherData.city.coord.lat: ${storedWeatherData.city.coord.lat}, " +
-                                         "latitude: $latitude")
+    val favResponseState:StateFlow<ForecastWeatherState> = _favResponseState
 
-                             Log.i("testDate", storedWeatherData.list[0].dt_txt.split(" ")[0]+ " "+ getCurrentDate())
+    private lateinit var targetLanguage:String
+
+    private lateinit var targetTempratureUnit:String
+    private lateinit var targetDate:String
+    private  var targetLongitude:Double=0.0
+    private var targetLatitude :Double=0.0
+    var iSettingsUpdated = false
 
 
 
-                             if (storedWeatherData.list[0].dt_txt.split(" ")[0] == getCurrentDate() &&
-                                 Math.abs(storedWeatherData.city.coord.lon - longitude) < longitudeThreshold &&
-                                 Math.abs(storedWeatherData.city.coord.lat - latitude) < latitudeThreshold
-                             ) {
-                                 Log.i("secondIfTrue", "getRemoteForecastWeather: ")
-                                 _weatherResponse.value = storedWeatherData
-                                 _weatherResponseState.value = ForecastWeatherState.Success(storedWeatherData)
-                             } else  {
 
-                                 Log.i("insidedeletion", "getRemoteForecastWeather: ")
 
-                                 try {
+    fun fetchForecastWeather(settingsViewModel: SettingsViewModel,latitude: Double, longitude: Double) {
 
-                                     _irepo.deleteWeatherObject(storedWeatherData)
-                                     fetchDataFromApi(latitude, longitude, tempUnit, language)
-                                     // Deletion was successful
-                                 } catch (e: Exception) {
-                                     Log.e("DeletionError", "Error deleting weather data: $e")
-                                     // Handle deletion failure
-                                 }
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            Log.i("iSettingsUpdated", "fetchForecastWeather: "+iSettingsUpdated)
 
 
 
-                             }
-                         }
-                         else {
-                             Log.i("list is null", "getRemoteForecastWeather: ")
+            if (iSettingsUpdated) {
+                Log.i("locatonrecieved", "fetchForecastWeather: "+latitude+longitude)
+                Log.i("yesUpdated", "fetchForecastWeather: ")
+                fetchDataFromApi(latitude, longitude)
+                targetLatitude=latitude
+                targetLongitude=longitude
 
-                             fetchDataFromApi(latitude, longitude, tempUnit, language)
-                         }
+                iSettingsUpdated=false
+            } else {
+                val weatherObject = getWeatherObjectFromRoom()
+                Log.i("weatherobject", "fetchForecastWeather: "+weatherObject)
 
-                     }
+                if (weatherObject != null) {
+                    // Weather object exists in the database
+                    targetDate = weatherObject.list?.get(0)?.dt_txt?.split(" ")?.get(0).toString()
+                    targetLatitude = weatherObject.city?.coord?.lat ?: 0.0
+                    targetLongitude = weatherObject.city?.coord?.lon ?: 0.0
 
-                 }
-         }
-
-     }
-
-     fun fetchDataFromApi(
-        latitude: Double,
-        longitude: Double,
-        tempUnit: String,
-        language: String
-    ) {
+                    // Logging for debugging purposes
+                    Log.i(
+                        "salmaaaaa",
+                        "fetchForecastWeather: $targetDate $targetLatitude $targetLongitude $latitude $longitude"
+                    )
 
 
-        viewModelScope.launch {(Dispatchers.IO)
-            _irepo.getForecastWeather(latitude, longitude, tempUnit, language)
+                    if (targetDate == getCurrentDate() &&
+                        Math.abs(targetLongitude - longitude) < longitudeThreshold &&
+                        Math.abs(targetLatitude - latitude) < latitudeThreshold
+                    ) {
+                        // Data is up to date, no need to fetch from the API
+                        Log.i("af", "fetchForecastWeather: ")
+                        Log.i(
+                            "TAG",
+                            "fetchForecastWeather: $targetDate $targetLatitude $targetLongitude $latitude $longitude"
+                        )
+                        targetLatitude = latitude
+                        targetLongitude = longitude
+                        getSettingConfiguration(settingsViewModel)
+                        fetchWeatherDataFromDataBase()
+                    } else {
+                        // Data is outdated, fetch from API and update the database
+                        targetLatitude = latitude
+                        targetLongitude = longitude
+                        getSettingConfiguration(settingsViewModel)
 
-                .collect { weatherResponse ->
-                    Log.i("insideapi", "fetchDataFromApi: "+weatherResponse.list.get(0).weather)
-//                    try {
-//
-//
-//                        isDataInsertion = true
-//                        _irepo.insertWeatherObject(weatherResponse)
-//                        isDataInsertion = false
-//                    } catch (e: Exception) {
-//                        Log.e("errorInserting", "Error inserting weather data: $e")
-//                    }
-                    Log.i("afterinsert", "fetchDataFromApi: ")
-                    _weatherResponse.value=weatherResponse
-                    _weatherResponseState.value = ForecastWeatherState.Success(weatherResponse)
+                        fetchDataFromApi(targetLatitude, targetLongitude)
+                    }
 
-                    Log.i("weatherItem", "getRemoteForecastWeather: " + weatherResponse.list.get(0))
-                    Log.i("succeded", "getRemoteForecastWeather: " + weatherResponse.city.name)
+                } else {
+                    // Weather object does not exist in the database, fetch from API
+
+                    Log.i("out", "fetchForecastWeather: ")
+
+                    getSettingConfiguration(settingsViewModel)
+
+                    fetchDataFromApi(latitude, longitude)
                 }
+
+            }
+
         }
     }
 
-     fun getSettingConfiguration(
-        settingsViewModel: SettingsViewModel,
-        latitude: Double,
-        langitude: Double,
-         source: DataSource =DataSource.AUTO
-        // setting ->
-        //fav-> api
-    ) {
+
+
+
+
+    fun fetchDataFromApi(latitude: Double, longitude: Double) {
+        Log.i("in", "fetchDataFromApi: ")
+
+
+        viewModelScope.launch(Dispatchers.IO){
+
+
+            _irepo.getForecastWeather(latitude, longitude, targetTempratureUnit, targetLanguage)
+
+                .catch { e ->
+
+                    _apiWeatherResponseState.value = ForecastWeatherState.Failure(e)
+                }
+                .collect { weatherResponse ->
+
+
+                        Log.i("beforedelete", "fetchDataFromApi: ")
+                        deleteWeatherObjectToRoom()
+                        Log.i("afterdelete", "fetchDataFromApi: ")
+                        insertWeatherObjectToRoom(weatherResponse)
+                        _apiWeatherResponseState.value = ForecastWeatherState.Success(weatherResponse)
+
+                        Log.i("inserted", "fetchDataFromApi: "+weatherResponse.city)
+
+                    }
+
+
+                }
+        }
+
+
+
+    fun fetchFavWeatherFromApi(latitude: Double, longitude: Double) {
+        Log.i("favlocation", "fetchFavWeatherFromApi: "+latitude+longitude)
+
+        viewModelScope.launch {
+            (Dispatchers.IO)
+            _irepo.getForecastWeather(latitude, longitude, targetTempratureUnit, targetLanguage)
+
+                .catch { e ->
+
+                    _favResponseState.value = ForecastWeatherState.Failure(e)
+                }
+                .collect { weatherResponse ->
+
+
+                    Log.i("fetchapifav", "fetchFavWeatherFromApi: " + weatherResponse.city.name)
+
+                    _favResponseState.value = ForecastWeatherState.Success(weatherResponse)
+                }
+        }
+
+
+    }
+
+     fun getSettingConfiguration( settingsViewModel: SettingsViewModel) {
 
         // Access saved settings
         val savedSettings = settingsViewModel.getSavedSettings()
 
-        val language = if (savedSettings.selectedLanguage == "Arabic") "ar" else "en"
+         targetLanguage = if (savedSettings.selectedLanguage == "Arabic" || savedSettings.selectedLanguage == "العربية") "ar" else "en"
 
 
-        Log.i("lang", "initializeHomeParameters: $language")
+        Log.i("languageselected", "initializeHomeParameters: $targetLanguage")
 
-        val targetTemperature = when (savedSettings.selectedTemperatureUnit) {
-            "Celsius" -> "metric"
-            "Fahrenheit" -> "imperial"
-            else -> "standard"
-        }
+         targetTempratureUnit = when (savedSettings.selectedTemperatureUnit) {
+             "Celsius", "درجة مئوية" -> "metric"
+             "Fahrenheit", "درجة فهرنهايت" -> "imperial"
+             "Kelvin", "كلفن" -> "standard"
+             else -> "standard" // Default to standard in any case
+         }
 
-
-        val targetWindSpeed =
-            if (savedSettings.selectedWindSpeedUnit == "Mile/hour") "Imperial" else "Metric"
-        Log.i("wind", "initializeHomeParameters: $targetWindSpeed")
-
-        Log.i("coords", "startHome: " + latitude + " " + langitude)
-
-
-//        fetchDataFromApi(
-//            latitude,
-//            langitude,
-//            targetTemperature,
-//            language
-//
-//        )
     }
 
 
-    fun observeSetting(settingsViewModel: SettingsViewModel, latitude: Double, langitude: Double) {
+    fun observeSetting(settingsViewModel: SettingsViewModel) {
 
 
         viewModelScope.launch{
-            Log.i("inside", "getSettingConfigeration: ")
+            Log.i("insideobserver", "getSettingConfigeration: ")
             settingsViewModel.settings.collect { setting ->
 
+                iSettingsUpdated=true
+
                 Log.i("getsetting", "getSettingConfigeration: " + setting.selectedLanguage)
-                val targetLanguage = if (setting.selectedLanguage == "Arabic") "ar" else "en"
+
+                targetLanguage = if (setting.selectedLanguage == "Arabic" || setting.selectedLanguage == "العربية") "ar" else "en"
                 Log.i("targetLanguage", "getSettingConfigeration: " + targetLanguage)
 
-                val targetTemperature = when (setting.selectedTemperatureUnit) {
-                    "Celsius" -> "metric"
-                    "Fahrenheit" -> "imperial"
-                    else -> "standard"
+                targetTempratureUnit = when (setting.selectedTemperatureUnit) {
+                    "Celsius", "درجة مئوية" -> "metric"
+                    "Fahrenheit", "درجة فهرنهايت" -> "imperial"
+                    "Kelvin", "كلفن" -> "standard"
+                    else -> "standard" // Default to standard in any case
                 }
-
-                val targetWindSpeed =
-                    if (setting.selectedWindSpeedUnit == "Mile/hour") "Imperial" else "Metric"
-
-
-                fetchDataFromApi(
-                    latitude,
-                    langitude,
-                    targetTemperature,
-                    targetWindSpeed
-
-                )
-
 
             }
         }
 
     }
+
+
+
+    fun fetchWeatherDataFromDataBase() {
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.i("in database", "fetchWeatherDataFromDataBase: ")
+            _irepo.getAllStoredWeatherData()
+                .catch { e ->
+                    _dbWeatherResponseState.value = ForecastWeatherState.Failure(e)
+                }
+                .collect { weatherResponse ->
+                    if (weatherResponse != null) {
+                        _dbWeatherResponseState.value = ForecastWeatherState.Success(weatherResponse)
+                    } else {
+                        // Handle the case when weatherResponse is null
+                        // For example, you could emit a different state or log an error
+                        Log.e("fetchWeatherDataFromDataBase", "weatherResponse is null")
+                    }
+                }
+        }
+    }
+
+
+    suspend fun insertWeatherObjectToRoom(weatherResponse: ForeCastWeatherResponse){
+        _irepo.insertWeatherObject(weatherResponse)
+    }
+
+    suspend fun deleteWeatherObjectToRoom(){
+        _irepo.deleteWeatherObject()
+    }
+
+    suspend fun getWeatherObjectFromRoom(): ForeCastWeatherResponse? {
+        return _irepo.getAllStoredWeatherData().firstOrNull()
+    }
+
+
+
 }
+
 
 
 

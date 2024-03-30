@@ -106,7 +106,7 @@ class FavLocationsFragment : Fragment(),OnFavLocationClickListener,OnRemoveLocat
                 WeatherRepositoryImpl.getInstance(
                 WeatherRemoteDataSourceImpl.getInstance(), WeatherLocalDataSourceImpl(requireContext())
                 ))
-        favViewModel = ViewModelProvider(this, favFactory).get(FavLocationsViewModel::class.java)
+        favViewModel = ViewModelProvider(requireActivity(), favFactory).get(FavLocationsViewModel::class.java)
     }
 
     override fun OnFavLocationClick(location: LocationData) {

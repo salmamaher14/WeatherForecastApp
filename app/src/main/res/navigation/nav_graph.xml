@@ -48,5 +48,25 @@
             android:name="fromSettingFragment"
             android:defaultValue="false"
             app:argType="boolean" />
+        <argument
+            android:name="fromAlertFragment"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_mapFragment_to_alertFragment"
+            app:destination="@id/alertFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/alertFragment"
+        android:name="com.example.weatherforecastapp.alert.view.AlertFragment"
+        android:label="Alert" >
+        <action
+            android:id="@+id/action_alertFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <argument
+            android:name="alertLocation"
+            android:defaultValue="@null"
+            app:argType="com.example.weatherforecastapp.model.LocationData"
+            app:nullable="true" />
     </fragment>
 </navigation>

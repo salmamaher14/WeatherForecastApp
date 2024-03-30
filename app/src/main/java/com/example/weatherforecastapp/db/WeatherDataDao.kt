@@ -14,11 +14,12 @@ interface WeatherDataDao {
     @Query("SELECT * FROM forecast_weather_response")
     fun getAllStoredWeatherData(): Flow<ForeCastWeatherResponse>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+
     suspend fun insertWeatherObject(weatherData: ForeCastWeatherResponse)
 
-    @Delete
-    suspend fun deleteWeatherObject(weatherData: ForeCastWeatherResponse)
+    @Query("DELETE FROM forecast_weather_response")
+    suspend fun deleteAllWeatherData()
 }
 
 

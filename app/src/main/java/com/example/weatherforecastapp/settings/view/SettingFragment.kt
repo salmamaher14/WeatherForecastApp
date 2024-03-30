@@ -49,7 +49,7 @@ class SettingFragment : Fragment() {
 
         initUi()
         settingsFactory = SettingsViewModelFactory(requireActivity().application)
-        viewModel = ViewModelProvider(this, settingsFactory).get(SettingsViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), settingsFactory).get(SettingsViewModel::class.java)
 
         selectedSettings = viewModel.getSavedSettings()
 
@@ -157,13 +157,6 @@ class SettingFragment : Fragment() {
         }
 
 
-//
-//        // Display the saved settings in the UI
-//        displaySavedSettings(selectedSettings)?:getDefaultSettings()
-
-
-
-
 
     }
 
@@ -192,6 +185,7 @@ class SettingFragment : Fragment() {
 
 
     fun  displaySavedSettings(savedSettings:SettingsData){
+        Log.i("recover", "displaySavedSettings: "+savedSettings.selectedLanguage)
 
         gpsRadioButton.isChecked = savedSettings.selectedLocationTool == getString(R.string.gps)
 
@@ -213,17 +207,7 @@ class SettingFragment : Fragment() {
 
     }
 
-    private fun getDefaultSettings(): SettingsData {
-        // Initialize default settings here
-        return SettingsData(
-            selectedLocationTool = getString(R.string.gps),
-            selectedTemperatureUnit = getString(R.string.celsius),
-            selectedWindSpeedUnit = getString(R.string.meterPerSecond),
-            selectedLanguage = getString(R.string.arabic),
-            selectedLocation = LocationData("",0.0,0.0)
 
-        )
-    }
 
 
 }

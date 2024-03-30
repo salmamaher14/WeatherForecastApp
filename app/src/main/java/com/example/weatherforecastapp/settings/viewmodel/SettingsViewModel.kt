@@ -1,15 +1,15 @@
 package com.example.weatherforecastapp.settings.viewmodel
 import android.app.Application
 import android.content.Context
-import android.provider.Settings.Global.getString
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.weatherforecastapp.R
+import androidx.lifecycle.viewModelScope
 import com.example.weatherforecastapp.model.LocationData
 import com.example.weatherforecastapp.model.SettingsData
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 
 class SettingsViewModel(application: Application): ViewModel() {
 
@@ -23,14 +23,14 @@ class SettingsViewModel(application: Application): ViewModel() {
 
 
 
-    fun updateSettings(updatedSettings: SettingsData) {
+     fun updateSettings(updatedSettings: SettingsData) {
         with(settingSharedPreferences.edit()) {
             putString("selectedLocationTool", updatedSettings.selectedLocationTool)
             putString("selectedTemperatureUnit", updatedSettings.selectedTemperatureUnit)
             putString("selectedWindSpeedUnit", updatedSettings.selectedWindSpeedUnit)
             putString("selectedLanguage", updatedSettings.selectedLanguage)
-            if (updatedSettings.selectedLocation != null) {
-                val json = gson.toJson(updatedSettings.selectedLocation)
+            if (updatedSettings.mapLocation != null) {
+                val json = gson.toJson(updatedSettings.mapLocation)
                 putString("selectedLocation", json)
             } else {
                 throw IllegalStateException("selected location is null")
@@ -38,30 +38,54 @@ class SettingsViewModel(application: Application): ViewModel() {
             apply()
         }
 
-        _settings.tryEmit(updatedSettings)
-        Log.i("Emiit", "updateSettings: The Updated Settings are $updatedSettings")
+         viewModelScope.launch {
+             _settings.emit(updatedSettings)
+             Log.i("Emiit", "updateSettings: The Updated Settings are $updatedSettings")
+         }
+
+
     }
 
 
 
     fun getSavedSettings(): SettingsData {
+        try {
+            val mapLocation = settingSharedPreferences.getString("selectedLocation", null)
+            val locationData = if (mapLocation != null) {
+                Log.i("getSavedSettings", "getSavedSettings: $mapLocation")
+                gson.fromJson(mapLocation, LocationData::class.java)
+            } else {
+                null
+            }
+            Log.i("storedata", "getSavedSettings: "+settingSharedPreferences.all)
 
-        val selectedLocation = settingSharedPreferences.getString("selectedLocation", null)
-        val locationData = if (selectedLocation != null) {
-            Log.i("getSavedSettings", "getSavedSettings: "+selectedLocation)
-            gson.fromJson(selectedLocation, LocationData::class.java)
-        } else {
-            null
+            return SettingsData(
+                selectedLocationTool = settingSharedPreferences.getString("selectedLocationTool", "Gps") ?: "Gps",
+                selectedTemperatureUnit = settingSharedPreferences.getString("selectedTemperatureUnit", "Celsius") ?: "Celsius",
+                selectedWindSpeedUnit = settingSharedPreferences.getString("selectedWindSpeedUnit", "Meter/sec") ?: "Meter/sec",
+                selectedLanguage = settingSharedPreferences.getString("selectedLanguage", "Arabic") ?: "Arabic",
+                mapLocation = locationData ?: LocationData("", 0.0, 0.0) // Provide default empty LocationData if null
+            )
+        } catch (e: Exception) {
+            // Log the error for debugging purposes
+            Log.e("getSavedSettings", "Error while retrieving settings", e)
+
+            // Provide default settings or handle the error based on your application's requirements
+            return getDefaultSettings()
         }
+    }
 
+    fun getDefaultSettings(): SettingsData {
+        // Provide default settings here
         return SettingsData(
-            selectedLocationTool = settingSharedPreferences.getString("selectedLocationTool", "Gps") ?:"Gps",
-            selectedTemperatureUnit = settingSharedPreferences.getString("selectedTemperatureUnit", "Celsius")?:"Celsius",
-            selectedWindSpeedUnit = settingSharedPreferences.getString("selectedWindSpeedUnit", "Meter/sec") ?: "Meter/sec",
-            selectedLanguage = settingSharedPreferences.getString("selectedLanguage", "Arabic") ?: "Arabic",
-            selectedLocation = locationData ?: LocationData("", 0.0, 0.0) // Provide default empty LocationData if null
+            selectedLocationTool = "Gps",
+            selectedTemperatureUnit = "Celsius",
+            selectedWindSpeedUnit = "Meter/sec",
+            selectedLanguage = "Arabic",
+            mapLocation = LocationData("", 0.0, 0.0)
         )
     }
+
 
 
 

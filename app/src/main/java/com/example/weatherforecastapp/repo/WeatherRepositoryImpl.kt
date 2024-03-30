@@ -8,6 +8,7 @@ import com.example.weatherforecastapp.network.RetrofitHelper
 import com.example.weatherforecastapp.network.WeatherRemoteDataSource
 import com.example.weatherforecastapp.network.WeatherService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 
 
 class WeatherRepositoryImpl private constructor(
@@ -85,8 +86,12 @@ class WeatherRepositoryImpl private constructor(
         weatherLocalDataSource.insertWeatherObject(weatherData)
     }
 
-    override suspend fun deleteWeatherObject(weatherData: ForeCastWeatherResponse) {
-        weatherLocalDataSource.deleteWeatherObject(weatherData)
+    override suspend fun deleteWeatherObject() {
+        weatherLocalDataSource.deleteWeatherObject()
+    }
+
+    override suspend fun getWeatherObjectStoredFromDb(): ForeCastWeatherResponse?{
+        return getAllStoredWeatherData().firstOrNull()
     }
 
 

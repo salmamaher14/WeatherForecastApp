@@ -34,7 +34,7 @@ class WeatherLocalDataSourceImpl(context: Context): WeatherLocalDataSource {
     }
 
     override suspend fun deleteLocation(location: LocationData) {
-        locationDao.delete(location)
+        locationDao.deleteLocation(location)
 
     }
 
@@ -61,8 +61,8 @@ class WeatherLocalDataSourceImpl(context: Context): WeatherLocalDataSource {
         weatherDataDao.insertWeatherObject(weatherData)
     }
 
-    override suspend fun deleteWeatherObject(weatherData: ForeCastWeatherResponse) {
-        weatherDataDao.deleteWeatherObject(weatherData)
+    override suspend fun deleteWeatherObject() {
+        weatherDataDao.deleteAllWeatherData()
     }
 
 

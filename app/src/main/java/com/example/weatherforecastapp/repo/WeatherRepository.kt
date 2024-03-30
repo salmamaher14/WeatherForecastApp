@@ -20,7 +20,8 @@ interface WeatherRepository {
 
     suspend fun getAllStoredWeatherData(): Flow<ForeCastWeatherResponse>
     suspend fun insertWeatherObject(weatherData: ForeCastWeatherResponse)
-    suspend fun deleteWeatherObject(weatherData: ForeCastWeatherResponse)
+    suspend fun deleteWeatherObject()
+    suspend fun getWeatherObjectStoredFromDb():ForeCastWeatherResponse?
 
 
 }

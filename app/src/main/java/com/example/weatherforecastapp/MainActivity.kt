@@ -1,10 +1,12 @@
 package com.example.weatherforecastapp
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.navigation.NavigationView
@@ -59,7 +61,23 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+    private fun handleIntent(intent: Intent?) {
+        if (intent != null && intent.hasExtra("FRAGMENT_TAG")) {
+            val fragmentTag = intent.getStringExtra("FRAGMENT_TAG")
+            if (fragmentTag != null) {
+                // Navigate to the fragment based on the provided tag
+                when (fragmentTag) {
+                    "HOME_FRAGMENT_TAG" -> navigateToHomeFragment()
+                    // Add more cases for other fragment tags if needed
+                }
+            }
+        }
+    }
 
+    private fun navigateToHomeFragment() {
+        val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        navController.navigate(R.id.homeFragment)
+    }
 
 }
 
