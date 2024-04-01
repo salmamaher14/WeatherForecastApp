@@ -8,6 +8,5 @@ import androidx.room.PrimaryKey
 data class WeatherAlert(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val duration: Long,
-    val alarmType: String
+    val date: String
 )

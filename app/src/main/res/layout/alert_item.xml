@@ -22,14 +22,14 @@
             android:id="@+id/alertImageView"
             android:scaleType="centerCrop"
             app:round="10dp"
-            android:layout_width="70dp"
+            android:layout_width="30dp"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_height="70dp"
+            android:layout_height="30dp"
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/alarm_icon"/>
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/locationTitleTextView"
+            android:id="@+id/alertTitleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -55,8 +55,9 @@
             app:tintMode="multiply"
             app:tint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/locationTitleTextView"
-            app:layout_constraintBottom_toBottomOf="@id/locationTitleTextView" />
+            app:layout_constraintTop_toTopOf="@id/alertTitleTextView"
+            app:layout_constraintBottom_toBottomOf="@id/alertTitleTextView"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

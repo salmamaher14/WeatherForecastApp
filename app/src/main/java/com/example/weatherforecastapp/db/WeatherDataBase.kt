@@ -10,7 +10,7 @@ import com.example.weatherforecastapp.model.ForeCastWeatherResponse
 import com.example.weatherforecastapp.model.LocationData
 import com.example.weatherforecastapp.model.WeatherAlert
 
-@Database(entities = arrayOf(LocationData::class,WeatherAlert::class,ForeCastWeatherResponse::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(LocationData::class,WeatherAlert::class,ForeCastWeatherResponse::class), version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class WeatherDataBase : RoomDatabase() {
     abstract fun getLocationDao(): LocationDao

@@ -2,12 +2,15 @@ package com.example.weatherforecastapp.favlocations.view
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +21,14 @@ import com.example.weatherforecastapp.local.WeatherLocalDataSourceImpl
 import com.example.weatherforecastapp.model.LocationData
 import com.example.weatherforecastapp.network.WeatherRemoteDataSourceImpl
 import com.example.weatherforecastapp.repo.WeatherRepositoryImpl
+import com.example.weatherforecastapp.utilities.ForecastWeatherState
+import com.example.weatherforecastapp.utilities.getAllDatesExceptCurrentDate
+import com.example.weatherforecastapp.utilities.getAllDatesOfTheCurrentDate
+import com.example.weatherforecastapp.utilities.getCurrentDate
+import com.example.weatherforecastapp.utilities.getSeparateDataAndTime
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class FavLocationsFragment : Fragment(),OnFavLocationClickListener,OnRemoveLocationClickListener{
@@ -30,13 +40,6 @@ class FavLocationsFragment : Fragment(),OnFavLocationClickListener,OnRemoveLocat
     private lateinit var favViewModel: FavLocationsViewModel
     private lateinit var  favFactory: FavLocationsViewModelFactory
 
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,22 +61,6 @@ class FavLocationsFragment : Fragment(),OnFavLocationClickListener,OnRemoveLocat
 
         }
 
-        favViewModel.favLocations.observe(
-            viewLifecycleOwner, object : Observer<List<LocationData>> {
-                override fun onChanged(locationsList: List<LocationData>) {
-                    favLocationsAdapter.submitList(locationsList)
-                }
-
-            }
-        )
-
-
-    }
-
-//    override fun onResume() {
-//        super.onResume()
-//        initFavFragmentParameters()
-//        setRecyclerViewParameters()
 //        favViewModel.favLocations.observe(
 //            viewLifecycleOwner, object : Observer<List<LocationData>> {
 //                override fun onChanged(locationsList: List<LocationData>) {
@@ -82,7 +69,18 @@ class FavLocationsFragment : Fragment(),OnFavLocationClickListener,OnRemoveLocat
 //
 //            }
 //        )
-//    }
+
+
+        lifecycleScope.launch {
+            favViewModel.favLocations.collect{
+                    favLocationsList ->
+                favLocationsAdapter.submitList(favLocationsList)
+
+            }
+        }
+
+    }
+
 
     fun initUi(){
 

@@ -1,69 +1,86 @@
 package com.example.weatherforecastapp.alert.view
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.example.weatherforecastapp.R
+
 import android.app.AlarmManager
+import android.app.AlertDialog
 import android.app.Application
 import android.app.DatePickerDialog
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
-import android.app.AlertDialog
-import android.app.NotificationChannel
-
-
 import android.icu.text.SimpleDateFormat
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
-
-
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
-
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.weatherforecastapp.R
 import com.example.weatherforecastapp.alert.viewmodel.AlertReciever
-import com.example.weatherforecastapp.home.view.HomeFragmentArgs
-
+import com.example.weatherforecastapp.alert.viewmodel.AlertViewModel
+import com.example.weatherforecastapp.alert.viewmodel.AlertViewModelFactory
+import com.example.weatherforecastapp.favlocations.view.FavLocationsListAdapter
+import com.example.weatherforecastapp.favlocations.view.OnFavLocationClickListener
+import com.example.weatherforecastapp.favlocations.view.OnRemoveLocationClickListener
 import com.example.weatherforecastapp.home.viewmodel.HomeViewModel
 import com.example.weatherforecastapp.home.viewmodel.HomeViewModelFactory
 import com.example.weatherforecastapp.local.WeatherLocalDataSourceImpl
+import com.example.weatherforecastapp.model.WeatherAlert
 import com.example.weatherforecastapp.network.WeatherRemoteDataSourceImpl
 import com.example.weatherforecastapp.repo.WeatherRepositoryImpl
+import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModel
+import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModelFactory
+import com.example.weatherforecastapp.utilities.isNetworkAvailable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
-import java.util.*
 
-
-
-class AlertFragment : Fragment() {
+class AlertFragment : Fragment(), OnRemoveAlertClickListener {
 
     private lateinit var btnSetAlert: FloatingActionButton
     private lateinit var notificationManager: NotificationManager
     private lateinit var alarmManager: AlarmManager
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var homeViewModelFactory: HomeViewModelFactory
+    private lateinit var settingsFactory:SettingsViewModelFactory
+
+    private lateinit var settingViewModel: SettingsViewModel
 
     private val calendar: Calendar = Calendar.getInstance()
 
     private lateinit var tvSelectedDate: TextView
     private lateinit var tvSelectedTime: TextView
 
+    private lateinit var alertsRecyclerView: RecyclerView
+    private lateinit var alertListAdapter: AlertListAdapter
+    private lateinit var layoutManager: LinearLayoutManager
+
+    private lateinit var alertViewModel: AlertViewModel
+    private lateinit var  alertFactory: AlertViewModelFactory
+
 
     object AlertParameters {
         var latitude:Double=0.0
         var longitude:Double=0.0
+        var language:String=""
+        var tempUnit:String=""
     }
-
-
-
 
 
     override fun onCreateView(
@@ -81,22 +98,34 @@ class AlertFragment : Fragment() {
 
         val alertLocation = AlertFragmentArgs.fromBundle(requireArguments()).alertLocation
         if (alertLocation != null) {
+
+            AlertParameters.latitude=alertLocation.latitude
+            AlertParameters.longitude=alertLocation.longitude
+            showAlertDialog()
             Log.i("from fav", "onViewCreated: " + alertLocation.cityName)
 
         }
 
 
         initAlertFragmentParameters()
-
+        setRecyclerViewParameters()
         createNotificationChannel(requireContext())
 
 
         btnSetAlert.setOnClickListener {
-            showAlertDialog()
+            val action = AlertFragmentDirections.actionAlertFragmentToMapFragment(fromAlertFragment =true)
 
+            findNavController().navigate(action)
 
         }
 
+        lifecycleScope.launch {
+            alertViewModel.storedAlerts.collect{
+                    alertList ->
+                alertListAdapter.submitList(alertList)
+
+            }
+        }
 
     }
 
@@ -172,8 +201,16 @@ class AlertFragment : Fragment() {
         alertDialog.show()
 
         btnSave.setOnClickListener {
+
             if (btnAlarm.isChecked) {
-//                handleAlarmSelection(calendar.time)
+
+                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+                val formattedDate = sdf.format(calendar.time)
+
+                val weatherAlert = WeatherAlert(date = formattedDate)
+                alertViewModel.insertAlert(weatherAlert)
+                handleAlarmSelection(calendar.time)
             } else {
                 // Handle notification selection
                 handleNotificationSelection(calendar.time)
@@ -189,6 +226,8 @@ class AlertFragment : Fragment() {
 
 
         val notificationIntent = Intent(requireContext(), AlertReciever::class.java)
+
+        notificationIntent.putExtra("alarmType", "notification")
 
         val pendingIntent = PendingIntent.getBroadcast(
             requireContext(), 0,
@@ -213,6 +252,34 @@ class AlertFragment : Fragment() {
         ).show()
     }
 
+    private fun handleAlarmSelection(selectedDateTime: Date) {
+        val selectedTime = selectedDateTime.time
+
+        val notificationIntent = Intent(requireContext(), AlertReciever::class.java)
+
+        // Pass an extra parameter indicating the user's choice
+        notificationIntent.putExtra("alarmType", "alarm")
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(), 0,
+            notificationIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        alarmManager.set(
+            AlarmManager.RTC_WAKEUP,
+            selectedTime,
+            pendingIntent
+        )
+
+        Toast.makeText(
+            requireContext(),
+            "Alarm set for ${selectedDateTime}",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+
 
     fun initAlertFragmentParameters() {
 
@@ -225,10 +292,23 @@ class AlertFragment : Fragment() {
             )
         homeViewModel = ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
 
+        settingsFactory = SettingsViewModelFactory(requireActivity().application)
+        settingViewModel = ViewModelProvider(requireActivity(), settingsFactory).get(SettingsViewModel::class.java)
+
         btnSetAlert= requireView().findViewById(R.id.btnAddAlert)
         notificationManager =
             requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        AlertParameters.language=settingViewModel.getSavedSettings().selectedLanguage
+        AlertParameters.tempUnit=settingViewModel.getSavedSettings().selectedTemperatureUnit
+
+        alertFactory =
+            AlertViewModelFactory(
+                WeatherRepositoryImpl.getInstance(
+                    WeatherRemoteDataSourceImpl.getInstance(), WeatherLocalDataSourceImpl(requireContext())
+                ))
+        alertViewModel = ViewModelProvider(requireActivity(), alertFactory).get(AlertViewModel::class.java)
 
 
     }
@@ -245,15 +325,54 @@ class AlertFragment : Fragment() {
         }
     }
 
+    override fun OnRemoveAlertClick(alert: WeatherAlert) {
+
+            val dialogBuilder = AlertDialog.Builder(requireContext())
+            dialogBuilder.setMessage("Are you sure you want to delete this alert?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog, id ->
+                    // User clicked Yes, delete the location
+                    alertViewModel.deleteAlert(alert)
+                    dialog.dismiss()
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    // User clicked No, do nothing
+                    dialog.dismiss()
+                }
+
+            val alert = dialogBuilder.create()
+            alert.show()
+
+    }
 
 
+    fun setRecyclerViewParameters(){
 
+        alertsRecyclerView= requireView().findViewById(R.id.alertRecyclerView)
+
+        layoutManager= LinearLayoutManager(context)
+        alertListAdapter= AlertListAdapter(this)
+        layoutManager.orientation = RecyclerView.VERTICAL
+        alertsRecyclerView.adapter = alertListAdapter
+
+    }
+
+    fun checkInternetConnection(context: Context) {
+        if (isNetworkAvailable(context)) {
+            // Internet connection is available
+            Toast.makeText(context, "You are online", Toast.LENGTH_SHORT).show()
+        } else {
+            // No internet connection
+            Toast.makeText(context, "You are offline", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkInternetConnection(requireContext())
+    }
 
 }
-
-
-
-
 
 
 

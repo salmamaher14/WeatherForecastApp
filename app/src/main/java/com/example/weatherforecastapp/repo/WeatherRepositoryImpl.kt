@@ -78,6 +78,10 @@ class WeatherRepositoryImpl private constructor(
        weatherLocalDataSource.insertWeatherAlert(alert)
     }
 
+    override suspend fun deleteAlert(alert: WeatherAlert) {
+       weatherLocalDataSource.deleteAlert(alert)
+    }
+
     override suspend fun getAllStoredWeatherData(): Flow<ForeCastWeatherResponse> {
        return weatherLocalDataSource.getAllStoredWeatherData()
     }

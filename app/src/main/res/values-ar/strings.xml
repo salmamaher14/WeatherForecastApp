@@ -20,7 +20,7 @@
     <string name="favourite">المفضلة</string>
     <string name="alert">التنبيه</string>
     <string name="weatherTitle">حالة الطقس</string>
-    <string name="gps">GPS</string>
+    <string name="gps">الموقع الحالي</string>
     <string name="location">الموقع</string>
     <string name="map">الخريطة</string>
     <string name="english">الإنجليزية</string>

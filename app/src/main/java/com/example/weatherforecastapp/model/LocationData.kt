@@ -36,4 +36,25 @@ data class LocationData(
             return arrayOfNulls(size)
         }
     }
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+
+        val that = other as LocationData
+
+        if (cityName != that.cityName) return false
+        if (latitude != that.latitude) return false
+        if (longitude != that.longitude) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = cityName.hashCode()
+        result = 31 * result + latitude.hashCode()
+        result = 31 * result + longitude.hashCode()
+        return result
+    }
 }

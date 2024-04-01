@@ -1,11 +1,13 @@
 package com.example.weatherforecastapp.settings.view
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.weatherforecastapp.R
@@ -14,6 +16,7 @@ import com.example.weatherforecastapp.model.SettingsData
 import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModel
 import com.example.weatherforecastapp.settings.viewmodel.SettingsViewModelFactory
 import com.example.weatherforecastapp.utilities.LocaleManager
+import com.example.weatherforecastapp.utilities.isNetworkAvailable
 import com.google.android.material.radiobutton.MaterialRadioButton
 
 
@@ -162,6 +165,7 @@ class SettingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        checkInternetConnection(requireContext())
         selectedSettings = viewModel.getSavedSettings()
         displaySavedSettings(selectedSettings)
     }
@@ -177,6 +181,8 @@ class SettingFragment : Fragment() {
         meterRadioButton = requireView().findViewById(R.id.meterRadioButton)
         milesRadioButton = requireView().findViewById(R.id.milesRadioButton)
     }
+
+
 
 
 
@@ -207,12 +213,24 @@ class SettingFragment : Fragment() {
 
     }
 
+    fun checkInternetConnection(context: Context) {
+        if (isNetworkAvailable(context)) {
+            // Internet connection is available
+            Toast.makeText(context, "You are online", Toast.LENGTH_SHORT).show()
+        } else {
+            // No internet connection
+            Toast.makeText(context, "You are offline", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+
 
 
 
 }
 
-// object locale manager
 
 
 

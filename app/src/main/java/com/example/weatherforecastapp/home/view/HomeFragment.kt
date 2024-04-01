@@ -560,7 +560,7 @@ class HomeFragment : Fragment() {
         Log.i("locationtool", "checkLocationProvideGpsOrMap: " + locationTool)
 
 
-        if (locationTool == "Gps") {
+        if (locationTool == "Gps" || locationTool=="الموقع الحالي") {
             Log.i("yesGps", "checkLocationProvideGpsOrMap: ")
             isGpsLocation = true
 

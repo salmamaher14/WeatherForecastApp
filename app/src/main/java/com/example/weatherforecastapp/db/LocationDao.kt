@@ -15,9 +15,9 @@ interface LocationDao{
      fun getAllStoredLocations(): Flow<List<LocationData>>
 
     @Insert (onConflict= OnConflictStrategy.IGNORE)
-    suspend fun insertLocation(location: LocationData): Long
+    suspend fun insertLocation(location: LocationData)
     @Delete
-    suspend fun deleteLocation(location: LocationData):Int
+    suspend fun deleteLocation(location: LocationData)
 
 
 }

@@ -128,8 +128,8 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/daysRecyclerView"
-                android:layout_width="224dp"
-                android:layout_height="318dp"
+                android:layout_width="wrap_content"
+                android:layout_height="300dp"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginStart="92dp"
                 android:layout_marginTop="18dp"
@@ -163,7 +163,9 @@
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
                 app:cardElevation="0dp"
-                app:contentPadding="15dp">
+                app:contentPadding="15dp"
+
+                app:cardBackgroundColor="@color/weatherPerDayColor">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -179,6 +181,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:roundPercent="0.9"
+                        android:background="@drawable/humidity_icon"
                         tools:srcCompat="@tools:sample/backgrounds/scenic[1]" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -188,7 +191,7 @@
                         android:layout_marginTop="16dp"
                         android:text="@string/Humidity"
                         android:textAlignment="center"
-                        android:textColor="@color/material_dynamic_primary0"
+                        android:textColor="@color/settingItem"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -202,7 +205,7 @@
                         android:layout_marginTop="4dp"
                         android:text="77"
                         android:textAlignment="center"
-                        android:textColor="@color/material_dynamic_primary0"
+                        android:textColor="@color/settingItem"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -223,7 +226,8 @@
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
                 app:cardElevation="0dp"
-                app:contentPadding="15dp">
+                app:contentPadding="15dp"
+                app:cardBackgroundColor="@color/weatherPerDayColor">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -239,6 +243,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:roundPercent="0.9"
+                        android:background="@drawable/wind_speed"
                         tools:srcCompat="@tools:sample/backgrounds/scenic[1]" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -248,12 +253,13 @@
                         android:layout_marginTop="16dp"
                         android:text="@string/windspeed"
                         android:textAlignment="center"
-                        android:textColor="@color/material_dynamic_primary0"
+                        android:textColor="@color/settingItem"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/windIcon" />
+                        app:layout_constraintTop_toBottomOf="@id/windIcon"
+                        />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/windTextView"
@@ -262,12 +268,14 @@
                         android:layout_marginTop="4dp"
                         android:text="77"
                         android:textAlignment="center"
-                        android:textColor="@color/material_dynamic_primary0"
+                        android:textColor="@color/settingItem"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/windTitle" />
+                        app:layout_constraintTop_toBottomOf="@id/windTitle"
+
+                        android:backgroundTint="#3B1C62DC"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -282,7 +290,8 @@
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
                 app:cardElevation="0dp"
-                app:contentPadding="15dp">
+                app:contentPadding="15dp"
+                app:cardBackgroundColor="@color/weatherPerDayColor">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -298,6 +307,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:roundPercent="0.9"
+                        android:background="@drawable/pressure_icon"
                         tools:srcCompat="@tools:sample/backgrounds/scenic[1]" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -307,7 +317,7 @@
                         android:layout_marginTop="16dp"
                         android:text="@string/Pressure"
                         android:textAlignment="center"
-                        android:textColor="@color/material_dynamic_primary0"
+                        android:textColor="@color/settingItem"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -322,7 +332,7 @@
                         android:layout_marginTop="4dp"
                         android:text="77"
                         android:textAlignment="center"
-                        android:textColor="@color/material_dynamic_primary0"
+                        android:textColor="@color/settingItem"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -342,7 +352,8 @@
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
                 app:cardElevation="0dp"
-                app:contentPadding="15dp">
+                app:contentPadding="15dp"
+                app:cardBackgroundColor="@color/weatherPerDayColor">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -358,6 +369,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:roundPercent="0.9"
+                        android:background="@drawable/clouds_icon"
                         tools:srcCompat="@tools:sample/backgrounds/scenic[1]" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -367,7 +379,7 @@
                         android:layout_marginTop="16dp"
                         android:text="@string/Clouds"
                         android:textAlignment="center"
-                        android:textColor="@color/material_dynamic_primary0"
+                        android:textColor="@color/settingItem"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -381,7 +393,7 @@
                         android:layout_marginTop="4dp"
                         tools:text="77"
                         android:textAlignment="center"
-                        android:textColor="@color/material_dynamic_primary0"
+                        android:textColor="@color/centerColorForHourCard"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"

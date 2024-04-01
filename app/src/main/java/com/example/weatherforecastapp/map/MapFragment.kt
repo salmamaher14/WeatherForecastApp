@@ -87,17 +87,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     }
 
 
-//                    }else if(args.fromAlertFragment){
-//
-//                        val action =MapFragmentDirections.actionMapFragmentToAlertFragment(
-//                            selectedLocation
-//                        )
-//                        findNavController().navigate(action)
-//
-////                        selectedSettings.mapLocation=selectedLocation
-////
-////                        settingViewModel.updateSettings(selectedSettings)
-//                    }
+                    else if(args.fromAlertFragment){
+
+
+                        val action =MapFragmentDirections.actionMapFragmentToAlertFragment(
+                            selectedLocation
+                        )
+                        findNavController().navigate(action)
+
+                    }
 
 
                     else{

@@ -13,11 +13,15 @@ interface WeatherLocalDataSource {
     suspend fun getStoredLocations():Flow<List<LocationData>>
 
     suspend fun getStoredWeatherAlerts():Flow<List<WeatherAlert>>
+    suspend fun deleteAlert(alert: WeatherAlert)
 
     suspend fun insertWeatherAlert(weatherAlert: WeatherAlert)
     suspend fun getAllStoredWeatherData(): Flow<ForeCastWeatherResponse>
     suspend fun insertWeatherObject(weatherData: ForeCastWeatherResponse)
     suspend fun deleteWeatherObject()
+
+
+
 
 
 

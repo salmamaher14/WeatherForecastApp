@@ -7,7 +7,7 @@
     <string name="Clouds">Clouds</string>
     <string name="Pressure">Pressure</string>
     <string name="windspeed">Wind Speed</string>
-    <string name="weather">Weather</string>
+    <string name="weather">Sky Watch</string>
     <string name="city_name">City Name</string>
     <string name="dummy_date">13 Mar 2024</string>
     <string name="temp_celsius">°C</string>
@@ -34,5 +34,6 @@
     <string name="meterPerSecond">Meter/sec</string>
     <string name="windSpeed">Wind Speed</string>
     <string name="saveLocation">Save Location</string>
+    <string name="weatherAppName">Sky Watch</string>
 
 </resources>

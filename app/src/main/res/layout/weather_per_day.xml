@@ -20,20 +20,20 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
 
-        android:textColor="@color/black"
-        android:textSize="10sp"
+        android:textColor="@color/settingItem"
+        android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.0"
         tools:text="Monday" />
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/weatherStateImageView"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_marginStart="25dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/dayNameTextView"
         app:layout_constraintStart_toEndOf="@id/dayNameTextView"
@@ -45,30 +45,32 @@
         android:id="@+id/weatherDescTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:textColor="@color/black"
-        android:textSize="10sp"
+        android:layout_marginStart="20dp"
+        android:textColor="@color/settingItem"
+        android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/weatherStateImageView"
         app:layout_constraintStart_toEndOf="@id/weatherStateImageView"
         app:layout_constraintTop_toTopOf="@+id/weatherStateImageView"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.428"
         tools:text="cool" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tempTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="15dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:textAlignment="center"
-        android:textColor="@color/black"
+        android:textColor="@color/settingItem"
         android:textSize="10sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/weatherDescTextView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toEndOf="@id/weatherDescTextView"
         app:layout_constraintTop_toTopOf="@+id/weatherDescTextView"
+        app:layout_constraintVertical_bias="1.0"
         app:layout_goneMarginTop="15dp"
         tools:text="20" />
 
@@ -78,14 +80,15 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/temp_celsius"
-        android:textColor="@color/black"
+        android:textColor="@color/settingItem"
         android:textSize="10sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/tempTextView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tempTextView"
-        app:layout_constraintTop_toTopOf="@+id/tempTextView" />
-
+        app:layout_constraintTop_toTopOf="@+id/tempTextView"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

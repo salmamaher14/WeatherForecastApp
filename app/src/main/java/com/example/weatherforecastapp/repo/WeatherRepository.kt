@@ -18,10 +18,14 @@ interface WeatherRepository {
 
     suspend fun insertWeatherAlert(alert:WeatherAlert)
 
+    suspend fun deleteAlert(alert: WeatherAlert)
+
     suspend fun getAllStoredWeatherData(): Flow<ForeCastWeatherResponse>
     suspend fun insertWeatherObject(weatherData: ForeCastWeatherResponse)
     suspend fun deleteWeatherObject()
     suspend fun getWeatherObjectStoredFromDb():ForeCastWeatherResponse?
+
+
 
 
 }
